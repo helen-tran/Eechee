@@ -1,0 +1,11 @@
+{  "scripts": {
+  "start": "node server.js",
+  "dev:backend": "nodemon server.js"
+},
+  "dependencies": {
+    "express": "^4.17.3",
+    "moment": "^2.29.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15"
+  }
+}
