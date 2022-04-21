@@ -3,8 +3,16 @@
 // import the needed node_modules.
 const express = require("express");
 const morgan = require("morgan");
-const { addUser } = require("./handlers");
-const PORT = process.env.PORT || 3000;
+const {
+  addUser,
+  getUsers,
+  getUser,
+  getTasks,
+  getTask,
+  deleteTask,
+  getTasksUser,
+} = require("./handlers");
+const PORT = process.env.PORT || 7500;
 express()
   // Below are methods that are included in express(). We chain them for convenience.
   // --------------------------------------------------------------------------------
@@ -16,13 +24,27 @@ express()
   // Any requests for static files will go into the public folder
   .use(express.static("public"))
 
-  // Nothing to modify above this line
-  // ---------------------------------
-  // add new endpoints here 👇
-  //  // adding reservation
-  .post("/sign up", addUser)
-  // add new endpoints here ☝️
-  // getting flights
+  // add new endpoints here
+  // get all users
+  .get("/users", getUsers)
+
+  // get single user
+  .get("/user/:id", getUser)
+
+  // get all tasks
+  .get("/tasks", getTasks)
+
+  // get single tasks
+  .get("/task/:id", getTask)
+
+  // get tasks for user with id
+  .get("/tasks/:taskId", getTasksUser)
+
+  // delete tasks
+  .delete("/task", deleteTask)
+
+  // sign up
+  .post("/signup", addUser)
 
   // ---------------------------------
   // Nothing to modify below this line

@@ -1,33 +1,14 @@
 "use strict";
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 require("dotenv").config();
 const { MONGO_URI } = process.env;
+const assert = require("assert");
 
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
-// TEST PURPOSE
-// const getCollection = async (dbName) => {
-//   // creates a new client
-//   const client = new MongoClient(MONGO_URI, options);
-//   // connect to the client
-//   await client.connect();
-
-//   // connect to the database (db name is provided as an argument to the function)
-//   const db = client.db(dbName);
-//   console.log("connected!");
-
-//   //   finding data
-//   const data = await db.collection("eechee").find().toArray();
-
-//   // close the connection to the database server
-//   client.close();
-//   console.log("disconnected!");
-// };
-// getCollection("eechee");
 
 // GET ALL USERS
 const getUsers = async (req, res) => {
@@ -35,7 +16,7 @@ const getUsers = async (req, res) => {
   try {
     await client.connect();
 
-    const db = client.db("Eechee");
+    const db = client.db("eechee-data");
 
     const users = await db.collection("users").find().toArray();
     if (users) {
@@ -64,10 +45,12 @@ const getUser = async (req, res) => {
 
   try {
     await client.connect();
-    const db = client.db("Eechee");
-    const userId = req.params._id;
+    const db = client.db("eechee-data");
+    const userId = req.params.id;
 
-    const user = await db.collection("users").findOne({ userId });
+    const user = await db
+      .collection("users")
+      .findOne({ _id: ObjectId(userId) });
     if (user) {
       return res
         .status(200)
@@ -83,23 +66,24 @@ const getUser = async (req, res) => {
     client.close();
   }
 };
+
 // GET ALL TASKS
 const getTasks = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
-    const db = client.db("Eechee");
+    const db = client.db("eechee-data");
 
-    const users = await db.collection("users").find().toArray();
-    if (users) {
+    const tasks = await db.collection("tasks").find().toArray();
+    if (tasks) {
       return res
         .status(200)
-        .json({ status: 200, message: "Users found!", data: users });
+        .json({ status: 200, message: "Tasks found!", data: tasks });
     } else {
       return res.status(404).json({
         status: 404,
-        message: "Users not found",
-        data: users,
+        message: "Tasks not found",
+        data: tasks,
       });
     }
   } catch (err) {
@@ -114,26 +98,69 @@ const getTasks = async (req, res) => {
 // GET TASK
 const getTask = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
-  await client.connect();
 
-  const taskId = req.params._id;
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const taskId = req.params.id;
 
-  const db = client.db("Eeechee");
-
-  await db.collection("tasks").findOne({ taskId }, (err, result) => {
-    result
-      ? res.status(200).json({
-          status: 200,
-          message: "Found task",
-          data: result,
-        })
-      : res.status(404).json({
-          status: 404,
-          message: "Didn't find the task.",
-          data: result,
-        });
+    const task = await db
+      .collection("tasks")
+      .findOne({ _id: ObjectId(taskId) });
+    if (task) {
+      return res
+        .status(200)
+        .json({ status: 200, message: "Found task!", data: task });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Didn't find the task",
+        data: task,
+      });
+    }
+  } finally {
     client.close();
-  });
+  }
+};
+// GET TASKS FOR USER WITH ID
+const getTasksUser = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const userId = req.params.taskId;
+
+    const tasks = await db.collection("tasks").find().toArray();
+    const user = await db
+      .collection("users")
+      .findOne({ _id: ObjectId(userId) });
+
+    const tasksUser = user.tasks;
+    const result = tasksUser.map((taskUser) => {
+      const task = tasks.find((task) => task._id.toString() === taskUser);
+      if (task) {
+        return task;
+      }
+    });
+
+    if (result) {
+      return res
+        .status(200)
+        .json({ status: 200, message: "Tasks for user found!", data: result });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Tasks for user not found",
+        data: result,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
 };
 
 // ADD TASKS
@@ -150,10 +177,10 @@ const addTask = async (req, res) => {
     const description = req.body.description;
     const checklist = req.body.checklist;
 
-    const db = client.db("Eechee");
+    const db = client.db("eechee-data");
     const result = await db.collection("tasks").insertOne({ newTask });
 
-    // add tasks to the user data! - a update function
+    // add tasks id to the user data! - a update function
     // const updateFlightInfo = await db
     //   .collection("flights")
     //   .updateOne(
@@ -180,21 +207,22 @@ const addTask = async (req, res) => {
     client.close();
   }
 };
+// UPDATE TASKS
 
-// DELETE TASK
+// DELETE TASKS
 const deleteTask = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   try {
     await client.connect();
-    const db = client.db("Eechee");
+    const db = client.db("eechee-data");
     const taskId = req.params._id;
 
     const task = await db
-      .collection("Eechee")
+      .collection("tasks")
       .deleteOne({ _id: ObjectId(taskId) });
 
-    // delete tasks to the user data! - a update function
+    // delete tasks id in the user data! - a update function
     // const updateUserInfo = await db
     //   .collection("user")
     //   .updateOne(
@@ -218,14 +246,15 @@ const deleteTask = async (req, res) => {
     client.close();
   }
 };
-// Resgister User
-
 // Sign In
-const addUsers = async (req, res) => {
+// pull from the purchasing thing to show the error
+
+// Resgister User
+const addUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
-    const db = client.db("Eechee");
+    const db = client.db("eechee-tasks");
     const newUser = req.body;
     const email = req.body.email;
     const password = req.body.password;
@@ -254,4 +283,14 @@ const addUsers = async (req, res) => {
   } finally {
     client.close();
   }
+};
+
+module.exports = {
+  getUsers,
+  getUser,
+  getTasks,
+  getTask,
+  deleteTask,
+  addUser,
+  getTasksUser,
 };
