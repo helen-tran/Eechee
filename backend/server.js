@@ -11,6 +11,7 @@ const {
   getTask,
   deleteTask,
   getTasksUser,
+  addTask,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -38,10 +39,13 @@ express()
   .get("/task/:id", getTask)
 
   // get tasks for user with id
-  .get("/tasks/:taskId", getTasksUser)
+  .get("/tasks/:userId", getTasksUser)
+
+  // add task
+  .post("/task", addTask)
 
   // delete tasks
-  .delete("/task", deleteTask)
+  .delete("/task/:taskId", deleteTask)
 
   // sign up
   .post("/signup", addUser)

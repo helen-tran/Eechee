@@ -122,23 +122,25 @@ const getTask = async (req, res) => {
     client.close();
   }
 };
-// GET TASKS FOR USER WITH ID
+// GET TASKS FOR USER WITH USER ID
 const getTasksUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
     const db = client.db("eechee-data");
-    const userId = req.params.taskId;
+    const userId = req.params.userId;
 
     const tasks = await db.collection("tasks").find().toArray();
-    const user = await db
-      .collection("users")
-      .findOne({ _id: ObjectId(userId) });
 
-    const tasksUser = user.tasks;
-    const result = tasksUser.map((taskUser) => {
-      const task = tasks.find((task) => task._id.toString() === taskUser);
-      if (task) {
+    const result = tasks.map((task) => {
+      const assignees = task.assignees;
+      console.log(assignees, "assignees");
+      const match = assignees.find((assignee) => {
+        assignee === userId;
+      });
+      //   match is returning undefined  - because some of the results are false therefore all is falses
+      //   console.log(match, "match");
+      if (match) {
         return task;
       }
     });
@@ -173,26 +175,18 @@ const addTask = async (req, res) => {
     let newTask = req.body;
     const taskName = req.body.taskName;
     const dueDate = req.body.dueDate;
-    const assignee = req.body.assignee;
+    const assignees = req.body.assignees;
     const description = req.body.description;
     const checklist = req.body.checklist;
 
     const db = client.db("eechee-data");
-    const result = await db.collection("tasks").insertOne({ newTask });
+    const result = await db.collection("tasks").insertOne(req.body);
 
-    // add tasks id to the user data! - a update function
-    // const updateFlightInfo = await db
-    //   .collection("flights")
-    //   .updateOne(
-    //     { flightNumber: flightNumber, "seats.id": seat },
-    //     { $set: { "seats.$.isAvailable": false } }
-    //   );
-
-    if (tasks.length === 1) {
+    if (result) {
       return res.status(200).json({
         status: 200,
         message: "Task added.",
-        data: req.body,
+        data: newTask,
       });
     } else {
       return res
@@ -216,30 +210,23 @@ const deleteTask = async (req, res) => {
   try {
     await client.connect();
     const db = client.db("eechee-data");
-    const taskId = req.params._id;
+    const taskId = req.params.taskId;
 
     const task = await db
       .collection("tasks")
       .deleteOne({ _id: ObjectId(taskId) });
 
-    // delete tasks id in the user data! - a update function
-    // const updateUserInfo = await db
-    //   .collection("user")
-    //   .updateOne(
-    //     { flightNumber: flightNumber, "seats.id": seat },
-    //     { $set: { "seats.$.isAvailable": false } }
-    //   );
     if (task.deletedCount === 1) {
       return res.status(200).json({
         status: 200,
         message: "The task has been deleted.",
-        data: flight,
+        data: task,
       });
     } else {
       return res.status(404).json({
         status: 404,
         message: "The task hasn't been deleted.",
-        data: flight,
+        data: task,
       });
     }
   } finally {
@@ -254,7 +241,7 @@ const addUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
-    const db = client.db("eechee-tasks");
+    const db = client.db("eechee-data");
     const newUser = req.body;
     const email = req.body.email;
     const password = req.body.password;
@@ -262,8 +249,8 @@ const addUser = async (req, res) => {
     const lastName = req.body.lastName;
     newUser.oraganization = "Eechee";
 
-    const user = await db.collection("users").insertOne(newUser);
-    if (user) {
+    const user = await db.collection("users").insertOne(req.body);
+    if (user.length === 1) {
       return res.status(200).json({
         status: 200,
         message: "New user added!",
@@ -290,6 +277,7 @@ module.exports = {
   getUser,
   getTasks,
   getTask,
+  addTask,
   deleteTask,
   addUser,
   getTasksUser,
