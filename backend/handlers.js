@@ -10,7 +10,7 @@ const options = {
   useUnifiedTopology: true,
 };
 
-// GET ALL USERS
+// GET ALL USERS  - works
 const getUsers = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -39,7 +39,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-// GET SINGLE USER
+// GET SINGLE USER - works
 const getUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -67,23 +67,23 @@ const getUser = async (req, res) => {
   }
 };
 
-// GET ALL TASKS
-const getTasks = async (req, res) => {
+// GET ALL PROJECTS - works
+const getProjects = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
     const db = client.db("eechee-data");
 
-    const tasks = await db.collection("tasks").find().toArray();
-    if (tasks) {
+    const projects = await db.collection("projects").find().toArray();
+    if (projects) {
       return res
         .status(200)
-        .json({ status: 200, message: "Tasks found!", data: tasks });
+        .json({ status: 200, message: "Projects found!", data: projects });
     } else {
       return res.status(404).json({
         status: 404,
-        message: "Tasks not found",
-        data: tasks,
+        message: "Projects not found",
+        data: projects,
       });
     }
   } catch (err) {
@@ -95,42 +95,48 @@ const getTasks = async (req, res) => {
   }
 };
 
-// GET TASK
-const getTask = async (req, res) => {
+// GET PROJECT - works
+const getProject = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   try {
     await client.connect();
     const db = client.db("eechee-data");
-    const taskId = req.params.id;
+    const projectId = req.params.id;
 
-    const task = await db
-      .collection("tasks")
-      .findOne({ _id: ObjectId(taskId) });
-    if (task) {
+    const project = await db
+      .collection("projects")
+      .findOne({ _id: ObjectId(projectId) });
+    if (project) {
       return res
         .status(200)
-        .json({ status: 200, message: "Found task!", data: task });
+        .json({ status: 200, message: "Found project!", data: project });
     } else {
       return res.status(404).json({
         status: 404,
-        message: "Didn't find the task",
-        data: task,
+        message: "Didn't find the project",
+        data: project,
       });
     }
   } finally {
     client.close();
   }
 };
-// GET TASKS FOR USER WITH USER ID
+
+// GET TASKS FOR USER WITH USER ID - fix this
 const getTasksUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
     const db = client.db("eechee-data");
     const userId = req.params.userId;
+    const projectId = req.params.projectId;
 
-    const tasks = await db.collection("tasks").find().toArray();
+    const project = await db
+      .collection("users")
+      .findOne({ _id: ObjectId(projectId) });
+
+    const tasks = project.tasks;
 
     const result = tasks.map((task) => {
       const assignees = task.assignees;
@@ -165,14 +171,15 @@ const getTasksUser = async (req, res) => {
   }
 };
 
-// ADD TASKS
+// ADD TASKS - works
 const addTask = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   try {
     await client.connect();
-
-    let newTask = req.body;
+    const projectId = req.params.projectId;
+    const newTask = req.body;
+    newTask._id = new ObjectId();
     const taskName = req.body.taskName;
     const dueDate = req.body.dueDate;
     const assignees = req.body.assignees;
@@ -180,7 +187,9 @@ const addTask = async (req, res) => {
     const checklist = req.body.checklist;
 
     const db = client.db("eechee-data");
-    const result = await db.collection("tasks").insertOne(req.body);
+    const result = await db
+      .collection("projects")
+      .updateOne({ _id: ObjectId(projectId) }, { $push: { tasks: req.body } });
 
     if (result) {
       return res.status(200).json({
@@ -189,9 +198,11 @@ const addTask = async (req, res) => {
         data: newTask,
       });
     } else {
-      return res
-        .status(404)
-        .json({ status: 404, message: "Can't create the task." });
+      return res.status(404).json({
+        status: 404,
+        message: "Can't create the task.",
+        data: newTask,
+      });
     }
   } catch (err) {
     return res
@@ -201,42 +212,74 @@ const addTask = async (req, res) => {
     client.close();
   }
 };
-// UPDATE TASKS
 
-// DELETE TASKS
+// DELETE TASKS - works
 const deleteTask = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   try {
     await client.connect();
     const db = client.db("eechee-data");
+    const projectId = req.params.projectId;
     const taskId = req.params.taskId;
 
-    const task = await db
-      .collection("tasks")
-      .deleteOne({ _id: ObjectId(taskId) });
+    const project = await db
+      .collection("projects")
+      .updateOne(
+        { _id: ObjectId(projectId) },
+        { $pull: { tasks: { _id: ObjectId(taskId) } } }
+      );
 
-    if (task.deletedCount === 1) {
+    if (project) {
       return res.status(200).json({
         status: 200,
         message: "The task has been deleted.",
-        data: task,
+        data: project,
       });
     } else {
       return res.status(404).json({
         status: 404,
         message: "The task hasn't been deleted.",
-        data: task,
+        data: project,
       });
     }
   } finally {
     client.close();
   }
 };
+
 // Sign In
+const signIn = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const email = req.params.email;
+    const password = req.params.password;
+
+    const user = await db
+      .collection("users")
+      .findOne({ email: email, password: password });
+
+    if (user) {
+      return res
+        .status(200)
+        .json({ status: 200, message: "User was logged in.", data: user });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "User wasn't logged in.",
+        data: project,
+      });
+    }
+  } finally {
+    client.close();
+  }
+};
 // pull from the purchasing thing to show the error
 
-// Resgister User
+// Resgister User - works
 const addUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
@@ -275,10 +318,11 @@ const addUser = async (req, res) => {
 module.exports = {
   getUsers,
   getUser,
-  getTasks,
-  getTask,
+  getProjects,
+  getProject,
   addTask,
   deleteTask,
   addUser,
+  signIn,
   getTasksUser,
 };
