@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Modal from "./Modal";
+import Modal from "./Modal/Modal";
 
 const Home = ({ openModal, setOpenModal }) => {
   return (
