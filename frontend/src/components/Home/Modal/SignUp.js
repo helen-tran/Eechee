@@ -1,16 +1,59 @@
 import styled from "styled-components";
+import { useState, useEffect, useContext } from "react";
+import { SignUpContext } from "../../../Context/SignUpContext";
 
 const SignUp = () => {
+  const { setIsSignUp, setSignUpInfo } = useContext(SignUpContext);
+
+  const [disabled, setDisabled] = useState(true);
+  const [userInput, setUserInput] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    Object.values(userInput).includes("")
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [userInput]);
+
+  const handleSignUp = async (event) => {
+    event.preventDefault();
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userInput),
+    };
+    const response = await fetch("/signUp", requestOptions);
+    const data = await response.json();
+    setSignUpInfo(data.data);
+    setIsSignUp(true);
+  };
   return (
     <Wrapper>
       <SubTitle>Don't have an account?</SubTitle>
       <Title>sign up</Title>
       <InputWrapper>
-        <InputField type="email" placeholder="Email" name="email" required />
+        <InputField
+          type="email"
+          placeholder="Email"
+          name="email"
+          required
+          value={userInput.email}
+          onChange={(e) =>
+            setUserInput({ ...userInput, email: e.target.value })
+          }
+        />
         <InputField
           type="password"
           placeholder="Password"
           name="password"
+          value={userInput.password}
+          onChange={(e) =>
+            setUserInput({ ...userInput, password: e.target.value })
+          }
           required
         />
       </InputWrapper>
@@ -19,16 +62,31 @@ const SignUp = () => {
           type="text"
           placeholder="First Name"
           name="firstName"
+          value={userInput.firstName}
+          onChange={(e) =>
+            setUserInput({ ...userInput, firstName: e.target.value })
+          }
           required
         />
         <InputField
           type="text"
           placeholder="Last Name"
           name="lastName"
+          value={userInput.lastName}
+          onChange={(e) =>
+            setUserInput({ ...userInput, lastName: e.target.value })
+          }
           required
         />
       </InputWrapper>
-      <Button>Sign Up</Button>
+      <Button
+        type="submit"
+        value="Confirm"
+        onClick={handleSignUp}
+        disabled={disabled}
+      >
+        Sign Up
+      </Button>
     </Wrapper>
   );
 };
@@ -63,6 +121,10 @@ const Button = styled.button`
   height: 40px;
   cursor: pointer;
   margin-top: 20px;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
 const InputWrapper = styled.div`
   display: flex;

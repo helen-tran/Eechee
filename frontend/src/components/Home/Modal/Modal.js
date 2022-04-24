@@ -1,14 +1,24 @@
 import styled from "styled-components";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
+import { SignUpContext } from "../../../Context/SignUpContext";
+import { useContext } from "react";
+import ConfirmationModal from "./ConfirmationModal";
 
 const Modal = ({ setOpenModal }) => {
+  const { isSignUp } = useContext(SignUpContext);
   return (
     <ModalWrapper>
-      <ModalContent>
-        <SignIn setOpenModal={setOpenModal} />
-        <SignUp />
-      </ModalContent>
+      {isSignUp ? (
+        <ConfirmationModal setOpenModal={setOpenModal} />
+      ) : (
+        <ModalContent>
+          <>
+            <SignIn setOpenModal={setOpenModal} />
+            <SignUp />
+          </>
+        </ModalContent>
+      )}
     </ModalWrapper>
   );
 };

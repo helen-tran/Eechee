@@ -52,7 +52,7 @@ express()
   .post("/login", signIn)
 
   // sign up
-  .post("/signup", addUser)
+  .post("/signUp", addUser)
 
   // ---------------------------------
   // Nothing to modify below this line

@@ -1,6 +1,34 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const SignIn = ({ setOpenModal }) => {
+  let navigate = useNavigate();
+  const [disabled, setDisabled] = useState(true);
+  const [userInput, setUserInput] = useState({
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    Object.values(userInput).includes("")
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [userInput]);
+
+  const handleSignIn = async (event) => {
+    event.preventDefault();
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userInput),
+    };
+    const response = await fetch("/login", requestOptions);
+    const data = await response.json();
+    // here with the sign in response set the user info - user context
+    // setReservationInfo(data.data);
+    navigate(`/`);
+  };
   return (
     <Wrapper>
       <HeaderSignIn>
@@ -15,14 +43,34 @@ const SignIn = ({ setOpenModal }) => {
       </HeaderSignIn>
       <Title>sign in</Title>
       <InputWrapper>
-        <InputField type="email" placeholder="Email" name="email" required />
+        <InputField
+          type="email"
+          placeholder="Email"
+          name="email"
+          value={userInput.email}
+          onChange={(e) =>
+            setUserInput({ ...userInput, email: e.target.value })
+          }
+          required
+        />
         <InputField
           type="password"
           placeholder="Password"
           name="password"
+          value={userInput.password}
+          onChange={(e) =>
+            setUserInput({ ...userInput, password: e.target.value })
+          }
           required
         />
-        <Button>Sign In</Button>
+        <Button
+          type="submit"
+          value="Confirm"
+          onClick={handleSignIn}
+          disabled={disabled}
+        >
+          Sign In
+        </Button>
       </InputWrapper>
     </Wrapper>
   );
@@ -67,7 +115,7 @@ const InputField = styled.input`
   font-size: 18px;
   height: 25px;
   color: #347193;
-  padding: 5px 10px 5px 10px;
+  padding: 5px 15px 5px 15px;
 `;
 
 const Button = styled.button`
@@ -79,5 +127,9 @@ const Button = styled.button`
   height: 40px;
   cursor: pointer;
   margin-top: 20px;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
 export default SignIn;

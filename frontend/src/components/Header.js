@@ -33,7 +33,6 @@ const Logo = styled.img`
 `;
 const LinkWrapper = styled(NavLink)``;
 const Button = styled.button`
-  margin-top: 20px;
   background: #347193;
   color: white;
   border: none;
