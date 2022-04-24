@@ -1,20 +1,39 @@
 import styled from "styled-components";
 import logo from "../assets/eechee-logo.svg";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { CurrentUserContext } from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/Context/CurrentUserContext.js";
 
 const Header = ({ setOpenModal }) => {
+  const { isLoggedIn, setIsLoggedIn } = useContext(CurrentUserContext);
   return (
     <Wrapper>
       <LinkWrapper to="/">
         <Logo src={logo} />
       </LinkWrapper>
-      <Button
-        onClick={() => {
-          setOpenModal(true);
-        }}
-      >
-        Get Started
-      </Button>
+      <RightMenu>
+        {isLoggedIn ? (
+          <>
+            <Link to="/projects">Projects</Link>
+            <Link to="/">Profile</Link>
+            <Button
+              onClick={() => {
+                setIsLoggedIn(false);
+              }}
+            >
+              Log Out
+            </Button>
+          </>
+        ) : (
+          <Button
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            Get Started
+          </Button>
+        )}
+      </RightMenu>
     </Wrapper>
   );
 };
@@ -32,7 +51,13 @@ const Logo = styled.img`
   width: 100px;
 `;
 const LinkWrapper = styled(NavLink)``;
+const Link = styled(NavLink)`
+  color: #347193;
+  text-decoration: none;
+  padding-left: 50px;
+`;
 const Button = styled.button`
+  margin-left: 50px;
   background: #347193;
   color: white;
   border: none;
@@ -41,4 +66,5 @@ const Button = styled.button`
   height: 50px;
   cursor: pointer;
 `;
+const RightMenu = styled.div``;
 export default Header;

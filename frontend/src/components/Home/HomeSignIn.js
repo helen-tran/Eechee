@@ -1,5 +1,15 @@
+import styled from "styled-components";
+import { useContext } from "react";
+import { CurrentUserContext } from "../../Context/CurrentUserContext";
+
 const HomeSignIn = () => {
-  return <div>sign in</div>;
+  const { currentUser } = useContext(CurrentUserContext);
+  return (
+    <div>
+      signed in
+      {currentUser.firstName}
+    </div>
+  );
 };
 
 export default HomeSignIn;

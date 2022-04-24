@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { CurrentUserContext } from "../../../Context/CurrentUserContext";
 
 const SignIn = ({ setOpenModal }) => {
+  const { setCurrentUser, setIsLoggedIn } = useContext(CurrentUserContext);
+
   let navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
   const [userInput, setUserInput] = useState({
@@ -25,8 +29,13 @@ const SignIn = ({ setOpenModal }) => {
     };
     const response = await fetch("/login", requestOptions);
     const data = await response.json();
-    // here with the sign in response set the user info - user context
-    // setReservationInfo(data.data);
+    // this works only if everything is entered correctly
+    setCurrentUser(data.data);
+
+    // only if there's the no error, then setIsLoggedIn
+    setIsLoggedIn(true);
+    setOpenModal(false);
+
     navigate(`/`);
   };
   return (

@@ -255,8 +255,8 @@ const signIn = async (req, res) => {
   try {
     await client.connect();
     const db = client.db("eechee-data");
-    const email = req.params.email;
-    const password = req.params.password;
+    const email = req.body.email;
+    const password = req.body.password;
 
     const user = await db
       .collection("users")
@@ -270,14 +270,13 @@ const signIn = async (req, res) => {
       return res.status(404).json({
         status: 404,
         message: "User wasn't logged in.",
-        data: project,
+        data: user,
       });
     }
   } finally {
     client.close();
   }
 };
-// pull from the purchasing thing to show the error
 
 // Resgister User - works
 const addUser = async (req, res) => {
