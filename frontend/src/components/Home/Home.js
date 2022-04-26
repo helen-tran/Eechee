@@ -2,7 +2,8 @@ import styled from "styled-components";
 import Modal from "./Modal/Modal";
 import { useContext } from "react";
 import { CurrentUserContext } from "../../Context/CurrentUserContext";
-import HomeSignIn from "./HomeSignIn";
+import HomeSignIn from "./HomeSignIn/HomeSignIn";
+import eechee from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/assets/eechee-home.svg";
 
 const Home = ({ openModal, setOpenModal }) => {
   const { isLoggedIn } = useContext(CurrentUserContext);
@@ -14,7 +15,7 @@ const Home = ({ openModal, setOpenModal }) => {
         <PageWrapper>
           <ContentWrapper>
             <Wrapper1>
-              <Title>eechee</Title>
+              <Title src={eechee} />
               <SubText>
                 Eechee is a web work management platform designed to help teams
                 organize, track, and manage their work.
@@ -45,8 +46,9 @@ const Wrapper2 = styled.div`
   padding-top: 100px;
   padding-bottom: 100px;
 `;
-const Title = styled.h1`
-  margin: 0;
+const Title = styled.img`
+  margin-top: 30px;
+  margin-bottom: 30px;
 `;
 const SubText = styled.h2`
   width: 60%;

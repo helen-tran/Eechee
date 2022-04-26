@@ -102,7 +102,7 @@ const getProject = async (req, res) => {
   try {
     await client.connect();
     const db = client.db("eechee-data");
-    const projectId = req.params.id;
+    const projectId = req.params._id;
 
     const project = await db
       .collection("projects")
@@ -118,6 +118,39 @@ const getProject = async (req, res) => {
         data: project,
       });
     }
+  } finally {
+    client.close();
+  }
+};
+
+// ADD PROJECT
+const addProject = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    await client.connect();
+
+    let newProject = req.body;
+    const projectName = req.body.projectName;
+
+    const db = client.db("eechee-data");
+    const project = await db.collection("projects").insertOne(req.body);
+
+    if (project) {
+      return res.status(200).json({
+        status: 200,
+        message: "Project created",
+        data: req.body,
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Can't create the project." });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
   } finally {
     client.close();
   }
@@ -180,11 +213,11 @@ const addTask = async (req, res) => {
     const projectId = req.params.projectId;
     const newTask = req.body;
     newTask._id = new ObjectId();
-    const taskName = req.body.taskName;
-    const dueDate = req.body.dueDate;
-    const assignees = req.body.assignees;
-    const description = req.body.description;
-    const checklist = req.body.checklist;
+    // const taskName = req.body.taskName;
+    // const dueDate = req.body.dueDate;
+    // const assignees = req.body.assignees;
+    // const description = req.body.description;
+    // const checklist = req.body.checklist;
 
     const db = client.db("eechee-data");
     const result = await db
@@ -285,10 +318,10 @@ const addUser = async (req, res) => {
     await client.connect();
     const db = client.db("eechee-data");
     const newUser = req.body;
-    const email = req.body.email;
-    const password = req.body.password;
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
+    // const email = req.body.email;
+    // const password = req.body.password;
+    // const firstName = req.body.firstName;
+    // const lastName = req.body.lastName;
     newUser.oraganization = "Eechee";
 
     const user = await db.collection("users").insertOne(req.body);
@@ -324,4 +357,5 @@ module.exports = {
   addUser,
   signIn,
   getTasksUser,
+  addProject,
 };

@@ -9,6 +9,8 @@ const SignIn = ({ setOpenModal }) => {
 
   let navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
+  const [signInError, setSignInError] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
@@ -27,17 +29,22 @@ const SignIn = ({ setOpenModal }) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userInput),
     };
+    setIsFetching(true);
     const response = await fetch("/login", requestOptions);
     const data = await response.json();
-    // this works only if everything is entered correctly
-    setCurrentUser(data.data);
-
-    // only if there's the no error, then setIsLoggedIn
-    setIsLoggedIn(true);
-    setOpenModal(false);
-
-    navigate(`/`);
+    if (data.status === 200) {
+      setCurrentUser(data.data);
+      setIsLoggedIn(true);
+      setOpenModal(false);
+      setSignInError(true);
+      setIsFetching(false);
+      navigate(`/`);
+    } else {
+      setSignInError(true);
+      setIsFetching(false);
+    }
   };
+
   return (
     <Wrapper>
       <HeaderSignIn>
@@ -60,6 +67,7 @@ const SignIn = ({ setOpenModal }) => {
           onChange={(e) =>
             setUserInput({ ...userInput, email: e.target.value })
           }
+          signInError={signInError}
           required
         />
         <InputField
@@ -70,15 +78,21 @@ const SignIn = ({ setOpenModal }) => {
           onChange={(e) =>
             setUserInput({ ...userInput, password: e.target.value })
           }
+          signInError={signInError}
           required
         />
+        {signInError && (
+          <ErrorMessage>
+            Incorrect email or password. Please try again.
+          </ErrorMessage>
+        )}
         <Button
           type="submit"
           value="Confirm"
           onClick={handleSignIn}
           disabled={disabled}
         >
-          Sign In
+          {isFetching ? <p>Loading</p> : <p>Sign In</p>}
         </Button>
       </InputWrapper>
     </Wrapper>
@@ -109,7 +123,7 @@ const HeaderSignIn = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-const InputWrapper = styled.div`
+const InputWrapper = styled.form`
   display: flex;
   flex-direction: column;
   border-bottom: 1.5px solid #347193;
@@ -125,6 +139,12 @@ const InputField = styled.input`
   height: 25px;
   color: #347193;
   padding: 5px 15px 5px 15px;
+  ${({ signInError }) =>
+    signInError &&
+    `
+      border-color: #ca2424;
+      outline: none;
+  `}
 `;
 
 const Button = styled.button`
@@ -140,5 +160,9 @@ const Button = styled.button`
     cursor: not-allowed;
     opacity: 0.6;
   }
+`;
+const ErrorMessage = styled.p`
+  margin-top: 20px;
+  color: #ca2424;
 `;
 export default SignIn;

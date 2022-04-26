@@ -13,6 +13,7 @@ const {
   getTasksUser,
   signIn,
   addTask,
+  addProject,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -37,7 +38,10 @@ express()
   .get("/projects", getProjects)
 
   // get single project
-  .get("/project/:id", getProject)
+  .get("/project/:_id", getProject)
+
+  // add project
+  .post("/project", addProject)
 
   // get tasks for user with id
   .get("/tasks/:userId", getTasksUser)

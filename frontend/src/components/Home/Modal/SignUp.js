@@ -4,7 +4,7 @@ import { SignUpContext } from "../../../Context/SignUpContext";
 
 const SignUp = () => {
   const { setIsSignUp, setSignUpInfo } = useContext(SignUpContext);
-
+  const [isFetching, setIsFetching] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [userInput, setUserInput] = useState({
     email: "",
@@ -26,10 +26,12 @@ const SignUp = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userInput),
     };
+    setIsFetching(true);
     const response = await fetch("/signUp", requestOptions);
     const data = await response.json();
     setSignUpInfo(data.data);
     setIsSignUp(true);
+    setIsFetching(false);
   };
   return (
     <Wrapper>
@@ -85,7 +87,7 @@ const SignUp = () => {
         onClick={handleSignUp}
         disabled={disabled}
       >
-        Sign Up
+        {isFetching ? <p>Loading</p> : <p>Sign Up</p>}
       </Button>
     </Wrapper>
   );
