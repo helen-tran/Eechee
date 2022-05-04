@@ -4,7 +4,7 @@ import { SignUpContext } from "../../../Context/SignUpContext";
 
 const ConfirmationModal = ({ setOpenModal }) => {
   const { signUpInfo, setIsSignUp } = useContext(SignUpContext);
-  console.log(signUpInfo);
+
   return (
     <Wrapper>
       <Header>
@@ -38,6 +38,11 @@ const ExitButton = styled.button`
   cursor: pointer;
   font-weight: 600;
   background: #f8f7f7;
+  &:hover {
+    background: #347193;
+    color: #f8f7f7;
+    transition: 0.2s;
+  }
 `;
 const Wrapper = styled.div`
   width: 1000px;

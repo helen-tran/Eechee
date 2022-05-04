@@ -1,12 +1,15 @@
 import styled from "styled-components";
 import Modal from "./Modal/Modal";
-import { useContext } from "react";
-import { CurrentUserContext } from "../../Context/CurrentUserContext";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../Context/UserContext";
 import HomeSignIn from "./HomeSignIn/HomeSignIn";
 import eechee from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/assets/eechee-home.svg";
 
 const Home = ({ openModal, setOpenModal }) => {
-  const { isLoggedIn } = useContext(CurrentUserContext);
+  const { isLoggedIn } = useContext(UserContext);
+  useEffect(() => {
+    setOpenModal(false);
+  }, []);
   return (
     <>
       {isLoggedIn ? (

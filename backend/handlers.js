@@ -123,7 +123,7 @@ const getProject = async (req, res) => {
   }
 };
 
-// ADD PROJECT
+// ADD PROJECT - works
 const addProject = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -156,14 +156,142 @@ const addProject = async (req, res) => {
   }
 };
 
-// GET TASKS FOR USER WITH USER ID - fix this
+// GET TASKS
+const getTasks = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+
+    const db = client.db("eechee-data");
+
+    const tasks = await db.collection("tasks").find().toArray();
+    if (tasks) {
+      return res
+        .status(200)
+        .json({ status: 200, message: "Tasks found!", data: tasks });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Tasks not found",
+        data: tasks,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
+
+// GET LISTS ACCORDING TO PROJECT - works
+const getListsProject = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const projectId = req.params.projectId;
+
+    const lists = await db
+      .collection("lists")
+      .aggregate([{ $match: { projectId: projectId } }])
+      .toArray();
+
+    if (lists) {
+      return res.status(200).json({
+        status: 200,
+        message: "Lists for project found!",
+        data: lists,
+      });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Lists for project not found",
+        data: lists,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
+
+// ADDING LIST - works
+const addList = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    await client.connect();
+
+    const db = client.db("eechee-data");
+    const list = await db.collection("lists").insertOne(req.body);
+
+    if (list) {
+      return res.status(200).json({
+        status: 200,
+        message: "List created",
+        data: req.body,
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Can't create the list." });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
+
+// GET TASKS ACCORDING TO LIST - works
+const getTasksProject = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const listId = req.params.listId;
+
+    const tasks = await db
+      .collection("tasks")
+      .aggregate([{ $match: { listId: listId } }])
+      .toArray();
+
+    if (tasks) {
+      return res.status(200).json({
+        status: 200,
+        message: "Tasks for the list found!",
+        data: tasks,
+      });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Tasks for the list not found",
+        data: tasks,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
+
+// GET TASKS/LIST ACCORDING ASSIGNEE AND PROJECT
 const getTasksUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
     const db = client.db("eechee-data");
     const userId = req.params.userId;
-    const projectId = req.params.projectId;
 
     const project = await db
       .collection("users")
@@ -207,33 +335,22 @@ const getTasksUser = async (req, res) => {
 // ADD TASKS - works
 const addTask = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
-
   try {
     await client.connect();
-    const projectId = req.params.projectId;
-    const newTask = req.body;
-    newTask._id = new ObjectId();
-    // const taskName = req.body.taskName;
-    // const dueDate = req.body.dueDate;
-    // const assignees = req.body.assignees;
-    // const description = req.body.description;
-    // const checklist = req.body.checklist;
-
     const db = client.db("eechee-data");
-    const result = await db
-      .collection("projects")
-      .updateOne({ _id: ObjectId(projectId) }, { $push: { tasks: req.body } });
+    const newTask = req.body;
 
-    if (result) {
+    const task = await db.collection("tasks").insertOne(req.body);
+    if (task) {
       return res.status(200).json({
         status: 200,
-        message: "Task added.",
+        message: "Task added!",
         data: newTask,
       });
     } else {
       return res.status(404).json({
         status: 404,
-        message: "Can't create the task.",
+        message: "Task fail to add.",
         data: newTask,
       });
     }
@@ -246,34 +363,30 @@ const addTask = async (req, res) => {
   }
 };
 
-// DELETE TASKS - works
+// DELETE TASKS
 const deleteTask = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   try {
     await client.connect();
     const db = client.db("eechee-data");
-    const projectId = req.params.projectId;
     const taskId = req.params.taskId;
 
-    const project = await db
-      .collection("projects")
-      .updateOne(
-        { _id: ObjectId(projectId) },
-        { $pull: { tasks: { _id: ObjectId(taskId) } } }
-      );
+    const task = await db
+      .collection("tasks")
+      .deleteOne({ _id: ObjectId(taskId) });
 
-    if (project) {
+    if (task.deletedCount === 1) {
       return res.status(200).json({
         status: 200,
         message: "The task has been deleted.",
-        data: project,
+        data: task,
       });
     } else {
       return res.status(404).json({
         status: 404,
         message: "The task hasn't been deleted.",
-        data: project,
+        data: task,
       });
     }
   } finally {
@@ -281,7 +394,7 @@ const deleteTask = async (req, res) => {
   }
 };
 
-// Sign In
+// Sign In - works
 const signIn = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -318,10 +431,6 @@ const addUser = async (req, res) => {
     await client.connect();
     const db = client.db("eechee-data");
     const newUser = req.body;
-    // const email = req.body.email;
-    // const password = req.body.password;
-    // const firstName = req.body.firstName;
-    // const lastName = req.body.lastName;
     newUser.oraganization = "Eechee";
 
     const user = await db.collection("users").insertOne(req.body);
@@ -358,4 +467,8 @@ module.exports = {
   signIn,
   getTasksUser,
   addProject,
+  getTasks,
+  getTasksProject,
+  getListsProject,
+  addList,
 };

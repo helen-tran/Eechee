@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
 import Header from "./components/Header";
 import Projects from "./components/Projects";
-import Project from "./components/Project";
+import Project from "./components/Project/Project";
 import GlobalStyles from "./GlobalStyles";
 import { useState } from "react";
 

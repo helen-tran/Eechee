@@ -1,11 +1,16 @@
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useContext } from "react";
+import Lists from "./Lists";
+import { UserContext } from "../../Context/UserContext";
+import Home from "../Home/Home";
 const Project = () => {
+  const { isLoggedIn } = useContext(UserContext);
   const { _id } = useParams();
   const [project, setProject] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
+
+  // calling project
   useEffect(() => {
     const project = async () => {
       const response = await fetch(`/project/${_id}`);
@@ -16,11 +21,6 @@ const Project = () => {
     project();
   }, []);
 
-  //   if (!hasLoaded) {
-  //     return <div></div>;
-  //   }
-
-  //   console.log(project);
   return (
     <>
       {hasLoaded ? (
@@ -29,15 +29,17 @@ const Project = () => {
             <Title>project</Title>
             <Selection>
               <InputWrapper>
-                <Input type="radio" checked /> 
-                <Label for="allTasks">all tasks</Label>
+                <Input type="radio" name="tasks" checked onChange={(e) => {}} />
+                 <Label for="allTasks">all tasks</Label>
               </InputWrapper>
               <InputWrapper>
-                <Input type="radio" /> <Label for="myTasks">my tasks</Label>
+                <Input type="radio" name="tasks" onChange={(e) => {}} /> 
+                <Label for="myTasks">my tasks</Label>
               </InputWrapper>
             </Selection>
           </HeaderWrapper>
           <SubTitle>{project.projectName}</SubTitle>
+          <Lists projectId={project._id} projectName={project.projectName} />
         </PageWrapper>
       ) : (
         <div>Loading</div>
@@ -45,7 +47,9 @@ const Project = () => {
     </>
   );
 };
-const PageWrapper = styled.div``;
+const PageWrapper = styled.div`
+  height: 100vh;
+`;
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -70,8 +74,7 @@ const Input = styled.input`
   height: 20px;
   border-radius: 50%;
   border: 1.5px solid #347193;
-  &:focus,
-  :checked {
+  &:checked {
     background: #347193;
   }
 `;

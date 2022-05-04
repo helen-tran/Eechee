@@ -11,9 +11,13 @@ const {
   getProject,
   deleteTask,
   getTasksUser,
+  getTasksProject,
   signIn,
-  addTask,
+  addList,
+  getTasks,
   addProject,
+  getListsProject,
+  addTask,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -43,14 +47,26 @@ express()
   // add project
   .post("/project", addProject)
 
+  // get all tasks
+  .get("/tasks", getTasks)
+
+  // get lists according to project
+  .get("/lists/:projectId", getListsProject)
+
+  //  add list
+  .post("/lists", addList)
+
+  // get tasks according to project
+  .get("/tasksList/:listId", getTasksProject)
+
   // get tasks for user with id
   .get("/tasks/:userId", getTasksUser)
 
   // add task
-  .post("/task/:projectId", addTask)
+  .post("/tasks", addTask)
 
   // delete tasks
-  .post("/:projectId/:taskId", deleteTask)
+  .delete("/task/:taskId", deleteTask)
 
   // login
   .post("/login", signIn)

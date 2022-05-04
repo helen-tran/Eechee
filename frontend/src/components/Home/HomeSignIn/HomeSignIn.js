@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { useContext } from "react";
-import { CurrentUserContext } from "../../../Context/CurrentUserContext";
+import { UserContext } from "../../../Context/UserContext";
 import ProjectsDetails from "./ProjectsDetails";
 import DueDates from "../DueDates";
 import ProjectSection from "./ProjectSection";
 
 const HomeSignIn = () => {
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useContext(UserContext);
   return (
     <div>
       <Title>home</Title>

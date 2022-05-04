@@ -2,10 +2,10 @@ import styled from "styled-components";
 import logo from "../assets/eechee-logo.svg";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
-import { CurrentUserContext } from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/Context/CurrentUserContext.js";
+import { UserContext } from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/Context/UserContext.js";
 
 const Header = ({ setOpenModal }) => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(CurrentUserContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
   return (
     <Wrapper>
       <LinkWrapper to="/">

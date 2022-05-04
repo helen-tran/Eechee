@@ -9,7 +9,11 @@ const ProjectSection = () => {
 
   return (
     <Box>
-      <BoxTitle>projects</BoxTitle>
+      <Header>
+        <BoxTitle>projects</BoxTitle>
+        {/* <AddButton>+</AddButton> */}
+      </Header>
+
       {projects.map((project) => {
         const projectName = project.projectName;
         const _id = project._id;
@@ -50,5 +54,10 @@ const Button = styled.button`
     color: #f8f7f7;
     transition: 0.2s;
   }
+`;
+const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 export default ProjectSection;

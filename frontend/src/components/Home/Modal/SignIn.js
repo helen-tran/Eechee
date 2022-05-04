@@ -2,10 +2,10 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
-import { CurrentUserContext } from "../../../Context/CurrentUserContext";
+import { UserContext } from "../../../Context/UserContext";
 
 const SignIn = ({ setOpenModal }) => {
-  const { setCurrentUser, setIsLoggedIn } = useContext(CurrentUserContext);
+  const { setCurrentUser, setIsLoggedIn } = useContext(UserContext);
 
   let navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
@@ -107,6 +107,11 @@ const ExitButton = styled.button`
   cursor: pointer;
   font-weight: 600;
   background: #f8f7f7;
+  &:hover {
+    background: #347193;
+    color: #f8f7f7;
+    transition: 0.2s;
+  }
 `;
 const Wrapper = styled.div`
   padding: 50px 50px 0 50px;
