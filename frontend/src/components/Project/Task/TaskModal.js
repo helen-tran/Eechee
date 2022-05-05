@@ -17,7 +17,6 @@ const TaskModal = ({
 }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [assigneesInfo, setAssigneesInfo] = useState([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     const fetchAssignees = async () => {
@@ -25,7 +24,6 @@ const TaskModal = ({
         assignees.map((assignee) => axios.get(`/user/${assignee}`))
       );
       setAssigneesInfo(responses.map((res) => res.data.data));
-      setHasLoaded(true);
     };
 
     fetchAssignees();

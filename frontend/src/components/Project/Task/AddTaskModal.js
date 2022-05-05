@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { UserContext } from "../../../Context/UserContext";
 import { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import AssigneeSearchBar from "./AssigneeSearchBar";
 
 const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
-  const { users } = useContext(UserContext);
   const [checklist, setChecklist] = useState([]);
   const [inputCheckName, setInputCheckName] = useState("");
+  const [names, setNames] = useState([]);
   const [task, setTask] = useState({
     taskName: "",
     dueDate: "",
@@ -79,6 +79,17 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
           </ProjectNameWrapper>
           <AssigneesWrapper>
             <p>Assignees</p>
+            <AssigneeSearchBar
+              task={task}
+              setTask={setTask}
+              setNames={setNames}
+              names={names}
+            />
+            <NameWrapper>
+              {names.map((name) => {
+                return <Assignees>{name}</Assignees>;
+              })}
+            </NameWrapper>
           </AssigneesWrapper>
         </DetailsWrapper>
         <Description>Description</Description>
@@ -200,9 +211,14 @@ const DetailsWrapper = styled.div`
 const AssigneesWrapper = styled.div`
   margin-left: 370px;
 `;
-const Assignee = styled.p`
-  margin-right: 10px;
+const Assignees = styled.p`
+  margin-right: 15px;
 `;
+const NameWrapper = styled.div`
+  margin-top: 10px;
+  display: flex;
+`;
+
 const ProjectNameWrapper = styled.div``;
 
 const Description = styled.p`
@@ -307,6 +323,7 @@ const Button = styled.button`
   width: 150px;
   height: 40px;
   cursor: pointer;
+  margin-bottom: 50px;
   margin-top: 20px;
   &:disabled {
     cursor: not-allowed;

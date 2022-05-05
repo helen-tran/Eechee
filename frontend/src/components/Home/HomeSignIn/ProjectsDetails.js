@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import { ProjectsContext } from "../../../Context/ProjectsContext";
+import { useContext } from "react";
+
 const ProjectsDetails = () => {
   return (
     <Box>
