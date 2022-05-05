@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmDelete from "./ConfirmDelete";
 import moment from "moment";
+import axios from "axios";
+
 const TaskModal = ({
   _id,
   checklist,
@@ -14,9 +16,32 @@ const TaskModal = ({
   fetchTasks,
 }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [assigneesInfo, setAssigneesInfo] = useState([]);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
+  useEffect(() => {
+    const fetchAssignees = async () => {
+      const responses = await Promise.all(
+        assignees.map((assignee) => axios.get(`/user/${assignee}`))
+      );
+      setAssigneesInfo(responses.map((res) => res.data.data));
+      setHasLoaded(true);
+    };
+
+    fetchAssignees();
+  }, []);
+
+  const Names = assigneesInfo.map((assignee) => {
+    const firstName = assignee.firstName;
+    const lastName = assignee.lastName;
+    return (
+      <Assignee>
+        {firstName} {lastName}
+      </Assignee>
+    );
+  });
   //   check and uncheck
-  const toggleCheck = (index) => {};
+  // const toggleCheck = (index) => {};
   return (
     <ModalWrapper>
       <ModalContent>
@@ -55,9 +80,7 @@ const TaskModal = ({
           </ProjectNameWrapper>
           <AssigneesWrapper>
             <p>Assignees</p>
-            {assignees.map((assignee) => {
-              return <Assignee>{assignee}</Assignee>;
-            })}
+            <NameWrapper> {Names}</NameWrapper>
           </AssigneesWrapper>
         </DetailsWrapper>
         <Description>Description</Description>
@@ -70,7 +93,7 @@ const TaskModal = ({
           const checklistName = list.checklistName;
           return (
             <ChecklistWrapper>
-              {list.isChecked ? (
+              {/* {list.isChecked ? (
                 <FilledBox
                   onClick={() => {
                     toggleCheck(index);
@@ -82,7 +105,7 @@ const TaskModal = ({
                     toggleCheck(index);
                   }}
                 />
-              )}
+              )} */}
               <ChecklistName> {checklistName}</ChecklistName>
             </ChecklistWrapper>
           );
@@ -171,7 +194,7 @@ const AssigneesWrapper = styled.div`
   margin-left: 370px;
 `;
 const Assignee = styled.p`
-  margin-right: 10px;
+  margin-right: 15px;
 `;
 const ProjectNameWrapper = styled.div``;
 
@@ -197,5 +220,10 @@ const FilledBox = styled.div`
 `;
 const ChecklistName = styled.p`
   margin-left: 30px;
+`;
+const NameWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 `;
 export default TaskModal;

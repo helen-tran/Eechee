@@ -30,11 +30,11 @@ const Project = () => {
             <Selection>
               <InputWrapper>
                 <Input type="radio" name="tasks" checked onChange={(e) => {}} />
-                 <Label for="allTasks">all tasks</Label>
+                 <Label htmlFor="allTasks">all tasks</Label>
               </InputWrapper>
               <InputWrapper>
                 <Input type="radio" name="tasks" onChange={(e) => {}} /> 
-                <Label for="myTasks">my tasks</Label>
+                <Label htmlFor="myTasks">my tasks</Label>
               </InputWrapper>
             </Selection>
           </HeaderWrapper>
