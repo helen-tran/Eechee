@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import ConfirmDelete from "./ConfirmDelete";
+import moment from "moment";
 const TaskModal = ({
   _id,
   checklist,
@@ -8,12 +9,14 @@ const TaskModal = ({
   description,
   assignees,
   taskName,
-  setOpenModal,
+  setTaskOpenModal,
   projectName,
   fetchTasks,
 }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  //   check and uncheck
+  const toggleCheck = (index) => {};
   return (
     <ModalWrapper>
       <ModalContent>
@@ -26,7 +29,7 @@ const TaskModal = ({
         )}
         <ExitButton
           onClick={() => {
-            setOpenModal(false);
+            setTaskOpenModal(false);
           }}
         >
           x
@@ -60,14 +63,27 @@ const TaskModal = ({
         <Description>Description</Description>
         <p>{description}</p>
         <SubTitle>due dates</SubTitle>
-        <p>{dueDate}</p>
+        <p>{moment(dueDate).format("MMM Do YYYY")}</p>
         <SubTitle>checklist</SubTitle>
-        {checklist.map((list) => {
+        {checklist.map((list, index) => {
           const checkmark = list.isChecked;
           const checklistName = list.checklistName;
           return (
             <ChecklistWrapper>
-              <p> {checklistName}</p>
+              {list.isChecked ? (
+                <FilledBox
+                  onClick={() => {
+                    toggleCheck(index);
+                  }}
+                />
+              ) : (
+                <EmptyBox
+                  onClick={() => {
+                    toggleCheck(index);
+                  }}
+                />
+              )}
+              <ChecklistName> {checklistName}</ChecklistName>
             </ChecklistWrapper>
           );
         })}
@@ -162,5 +178,24 @@ const ProjectNameWrapper = styled.div``;
 const Description = styled.p`
   margin-top: 10px;
 `;
-const ChecklistWrapper = styled.div``;
+const ChecklistWrapper = styled.div`
+  display: flex;
+  margin-top: 5px;
+`;
+const EmptyBox = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  border: 1.5px solid #347193;
+`;
+const FilledBox = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  background: #347193;
+  border: 1.5px solid #347193;
+`;
+const ChecklistName = styled.p`
+  margin-left: 30px;
+`;
 export default TaskModal;

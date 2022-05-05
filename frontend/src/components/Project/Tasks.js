@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import Task from "./Task/Task";
 import AddTaskModal from "./Task/AddTaskModal";
 
-const Tasks = ({ projectName, listId, setOpenModal, openModal }) => {
+const Tasks = ({ projectName, listId }) => {
   const [tasks, setTasks] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const fetchTasks = () => {
     const tasks = async () => {
@@ -23,15 +24,6 @@ const Tasks = ({ projectName, listId, setOpenModal, openModal }) => {
 
   return (
     <Wrapper>
-      {openModal && (
-        <AddTaskModal
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          projectName={projectName}
-          listId={listId}
-          fetchTasks={fetchTasks}
-        />
-      )}
       {hasLoaded ? (
         <>
           {tasks.map((task) => {
@@ -41,6 +33,7 @@ const Tasks = ({ projectName, listId, setOpenModal, openModal }) => {
             const dueDate = task.dueDate;
             const checklist = task.checklist;
             const _id = task._id;
+            const idList = task.listId;
             return (
               <>
                 <Task
@@ -52,15 +45,31 @@ const Tasks = ({ projectName, listId, setOpenModal, openModal }) => {
                   _id={_id}
                   projectName={projectName}
                   checklist={checklist}
+                  idList={idList}
                   fetchTasks={fetchTasks}
                 />
               </>
             );
           })}
+          {openModal && (
+            <AddTaskModal
+              setOpenModal={setOpenModal}
+              projectName={projectName}
+              listId={listId}
+              fetchTasks={fetchTasks}
+            />
+          )}
         </>
       ) : (
         <div>Loading</div>
       )}
+      <AddButton
+        onClick={() => {
+          setOpenModal(true);
+        }}
+      >
+        +
+      </AddButton>
     </Wrapper>
   );
 };
@@ -69,5 +78,21 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-
+const AddButton = styled.button`
+  border: 1.5px solid #347193;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  color: #347193;
+  cursor: pointer;
+  font-weight: 600;
+  background: #f8f7f7;
+  margin-right: 20px;
+  margin-top: 20px;
+  &:hover {
+    background: #347193;
+    color: #f8f7f7;
+    transition: 0.2s;
+  }
+`;
 export default Tasks;

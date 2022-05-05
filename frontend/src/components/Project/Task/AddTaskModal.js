@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { UserContext } from "../../../Context/UserContext";
-import { useEffect, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import CheckedBox from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/assets/check-box.svg";
 
 const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
   const { users } = useContext(UserContext);
@@ -48,10 +47,10 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
 
     const response = await fetch("/tasks", requestOptions);
     const data = await response.json();
-    console.log("success");
     setOpenModal(false);
     return fetchTasks();
   };
+
   return (
     <ModalWrapper>
       <ModalContent>
@@ -99,6 +98,8 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
             onChange={(date) => setTask({ ...task, dueDate: date })}
             dateFormat="dd/MM/yyyy"
             minDate={new Date()}
+            placeholderText="Select a date"
+            style={{ fontFamily: "roc-grotesk" }}
           />
         </DateWrapper>
         <ChecklistWrapper>
@@ -135,7 +136,7 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
             );
           })}
         </ChecklistWrapper>
-        <Button onClick={handleAddTask}>Save</Button>
+        <Button onClick={handleAddTask}>Add Task</Button>
       </ModalContent>
     </ModalWrapper>
   );
@@ -159,7 +160,7 @@ const ModalContent = styled.div`
   height: 740px;
   background: #f8f7f7;
   border-radius: 40px;
-  padding: 50px 50px 50px; 50px;
+  padding: 50px 50px 0px 50px;
   overflow-y: auto;
 `;
 const ExitButton = styled.button`
@@ -303,7 +304,7 @@ const Button = styled.button`
   color: white;
   border: none;
   border-radius: 30px;
-  width: 100px;
+  width: 150px;
   height: 40px;
   cursor: pointer;
   margin-top: 20px;

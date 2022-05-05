@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TaskModal from "./TaskModal";
-
 const Task = ({
   _id,
   dueDate,
@@ -12,26 +11,25 @@ const Task = ({
   checklist,
   fetchTasks,
 }) => {
-  const [openModal, setOpenModal] = useState(false);
-
+  const [openTaskModal, setTaskOpenModal] = useState(false);
   return (
     <TaskWrapper>
       <TaskButton
         key={_id}
         onClick={() => {
-          setOpenModal(true);
+          setTaskOpenModal(true);
         }}
       >
         {taskName}
       </TaskButton>
-      {openModal && (
+      {openTaskModal && (
         <TaskModal
           taskName={taskName}
           assignees={assignees}
           description={description}
           dueDate={dueDate}
           _id={_id}
-          setOpenModal={setOpenModal}
+          setTaskOpenModal={setTaskOpenModal}
           projectName={projectName}
           checklist={checklist}
           fetchTasks={fetchTasks}

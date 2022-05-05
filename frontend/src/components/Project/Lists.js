@@ -7,7 +7,6 @@ const Lists = ({ projectId, projectName }) => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInput, setIsInput] = useState(false);
   const [listName, setListName] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
 
   const fetchLists = () => {
     const lists = async () => {
@@ -32,7 +31,7 @@ const Lists = ({ projectId, projectName }) => {
     };
 
     const response = await fetch("/lists", requestOptions);
-    const data = await response.json();
+    await response.json();
     setIsInput(false);
     return fetchLists();
   };
@@ -45,21 +44,9 @@ const Lists = ({ projectId, projectName }) => {
             const listName = list.listName;
             const listId = list._id;
             return (
-              <ListWrapper>
-                <ListName>{listName}</ListName>
-                <Tasks
-                  listId={listId}
-                  projectName={projectName}
-                  openModal={openModal}
-                  setOpenModal={setOpenModal}
-                />
-                <AddButton
-                  onClick={() => {
-                    setOpenModal(true);
-                  }}
-                >
-                  +
-                </AddButton>
+              <ListWrapper key={listId}>
+                <ListName key={listId}>{listName}</ListName>
+                <Tasks key={listId} listId={listId} projectName={projectName} />
               </ListWrapper>
             );
           })}
@@ -98,6 +85,7 @@ const ListsWrapper = styled.div`
   display: flex;
   flex-direction: row;
   margin-top: 20px;
+  overflow-x: auto;
 `;
 const ListWrapper = styled.div`
   display: flex;
