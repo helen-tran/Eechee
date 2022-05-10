@@ -43,26 +43,29 @@ const TaskModal = ({
   });
 
   // check and uncheck
-  const handleCheckbox = async (e) => {
+  const handleCheckbox = (e) => {
     e.persist();
-    e.preventDefault();
+    // e.stopPropagation();
     setCheckboxes({
       ...checkboxes,
       checklistName: e.target.name,
       isChecked: e.target.checked,
       taskId: _id,
     });
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(checkboxes),
-    };
-    const response = await fetch(`/task`, requestOptions);
-    const data = await response.json();
-    setInfo(data);
-    console.log(info);
   };
-
+  useEffect(() => {
+    const checking = async (e) => {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(checkboxes),
+      };
+      const response = await fetch(`/task`, requestOptions);
+      const data = await response.json();
+      return fetchTasks();
+    };
+    checking();
+  }, [checkboxes]);
   const CommentSection = comments.map((comment) => {
     const name = comment.name;
     const mention = comment.comment;
