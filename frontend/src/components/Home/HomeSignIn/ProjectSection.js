@@ -11,7 +11,6 @@ const ProjectSection = () => {
     <Box>
       <Header>
         <BoxTitle>projects</BoxTitle>
-        {/* <AddButton>+</AddButton> */}
       </Header>
 
       {projects.map((project) => {

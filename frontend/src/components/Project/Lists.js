@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import Tasks from "./Tasks";
+import AllTasks from "./AllTasks";
+import MyTasks from "./MyTasks";
 
-const Lists = ({ projectId, projectName }) => {
+const Lists = ({ projectId, projectName, myTask }) => {
   const [lists, setLists] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInput, setIsInput] = useState(false);
@@ -46,7 +47,21 @@ const Lists = ({ projectId, projectName }) => {
             return (
               <ListWrapper key={listId}>
                 <ListName key={listId}>{listName}</ListName>
-                <Tasks key={listId} listId={listId} projectName={projectName} />
+                {myTask ? (
+                  <MyTasks
+                    key={listId}
+                    listId={listId}
+                    projectName={projectName}
+                    myTask={myTask}
+                  />
+                ) : (
+                  <AllTasks
+                    key={listId}
+                    listId={listId}
+                    projectName={projectName}
+                    myTask={myTask}
+                  />
+                )}
               </ListWrapper>
             );
           })}

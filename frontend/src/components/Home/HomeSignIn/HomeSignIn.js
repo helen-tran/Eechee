@@ -4,9 +4,11 @@ import { UserContext } from "../../../Context/UserContext";
 import ProjectsDetails from "./ProjectsDetails";
 import DueDates from "../DueDates";
 import ProjectSection from "./ProjectSection";
+import moment from "moment";
 
 const HomeSignIn = () => {
   const { currentUser } = useContext(UserContext);
+  const today = moment(new Date()).format("dddd MMM Do");
   return (
     <div>
       <Title>home</Title>
@@ -16,7 +18,7 @@ const HomeSignIn = () => {
           <ProjectsDetails />
         </WrapperLeft>
         <WrapperRight>
-          <SubTitle>current date - change </SubTitle>
+          <SubTitle>{today}</SubTitle>
           <DueDates />
         </WrapperRight>
       </MainWrapper>

@@ -10,6 +10,7 @@ const Task = ({
   projectName,
   checklist,
   fetchTasks,
+  comments,
 }) => {
   const [openTaskModal, setTaskOpenModal] = useState(false);
   return (
@@ -33,6 +34,7 @@ const Task = ({
           projectName={projectName}
           checklist={checklist}
           fetchTasks={fetchTasks}
+          comments={comments}
         />
       )}
     </TaskWrapper>

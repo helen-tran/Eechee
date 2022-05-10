@@ -18,6 +18,8 @@ const {
   addProject,
   getListsProject,
   addTask,
+  updateCheckmark,
+  addComment,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -35,8 +37,8 @@ express()
   // get all users
   .get("/users", getUsers)
 
-  // get single user
-  .get("/user/:id", getUser)
+  // get user
+  .get("/user/:userId", getUser)
 
   // get all projects
   .get("/projects", getProjects)
@@ -60,10 +62,16 @@ express()
   .get("/tasksList/:listId", getTasksProject)
 
   // get tasks for user with id
-  .get("/tasks/:userId", getTasksUser)
+  .get("/tasks/:userId/:listId", getTasksUser)
 
   // add task
   .post("/tasks", addTask)
+
+  // update checkmark
+  .post("/task", updateCheckmark)
+
+  // add comment
+  .post("/task/:taskId", addComment)
 
   // delete tasks
   .delete("/task/:taskId", deleteTask)

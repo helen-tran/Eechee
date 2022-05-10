@@ -1,16 +1,18 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Task from "./Task/Task";
 import AddTaskModal from "./Task/AddTaskModal";
+import { UserContext } from "../../Context/UserContext";
 
-const Tasks = ({ projectName, listId }) => {
+const MyTasks = ({ projectName, listId }) => {
+  const { currentUser } = useContext(UserContext);
   const [tasks, setTasks] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const fetchTasks = () => {
     const tasks = async () => {
-      const response = await fetch(`/tasksList/${listId}`);
+      const response = await fetch(`/tasks/${currentUser._id}/${listId}`);
       const data = await response.json();
       setTasks(data.data);
       setHasLoaded(true);
@@ -34,6 +36,7 @@ const Tasks = ({ projectName, listId }) => {
             const checklist = task.checklist;
             const _id = task._id;
             const idList = task.listId;
+            const comments = task.comments;
             return (
               <>
                 <Task
@@ -47,6 +50,7 @@ const Tasks = ({ projectName, listId }) => {
                   checklist={checklist}
                   idList={idList}
                   fetchTasks={fetchTasks}
+                  comments={comments}
                 />
               </>
             );
@@ -95,4 +99,4 @@ const AddButton = styled.button`
     transition: 0.2s;
   }
 `;
-export default Tasks;
+export default MyTasks;

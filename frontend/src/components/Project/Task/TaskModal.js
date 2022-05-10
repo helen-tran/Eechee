@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ConfirmDelete from "./ConfirmDelete";
+import Comments from "./AddComment";
 import moment from "moment";
 import axios from "axios";
 
@@ -14,10 +15,12 @@ const TaskModal = ({
   setTaskOpenModal,
   projectName,
   fetchTasks,
+  comments,
 }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [assigneesInfo, setAssigneesInfo] = useState([]);
-
+  const [checkboxes, setCheckboxes] = useState([]);
+  const [info, setInfo] = useState(null);
   useEffect(() => {
     const fetchAssignees = async () => {
       const responses = await Promise.all(
@@ -38,8 +41,43 @@ const TaskModal = ({
       </Assignee>
     );
   });
-  //   check and uncheck
-  // const toggleCheck = (index) => {};
+
+  // check and uncheck
+  const handleCheckbox = async (e) => {
+    e.persist();
+    e.preventDefault();
+    setCheckboxes({
+      ...checkboxes,
+      checklistName: e.target.name,
+      isChecked: e.target.checked,
+      taskId: _id,
+    });
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(checkboxes),
+    };
+    const response = await fetch(`/task`, requestOptions);
+    const data = await response.json();
+    setInfo(data);
+    console.log(info);
+  };
+
+  const CommentSection = comments.map((comment) => {
+    const name = comment.name;
+    const mention = comment.comment;
+    const time = comment.time;
+    return (
+      <CommentWrapper>
+        <CommentHeader>
+          <AvatarDefault />
+          <Name>{name}</Name>
+          <Timestamp>{moment(time).format("MMM Do YYYY, h:mm a")}</Timestamp>
+        </CommentHeader>
+        <Comment>{mention}</Comment>
+      </CommentWrapper>
+    );
+  });
   return (
     <ModalWrapper>
       <ModalContent>
@@ -78,7 +116,7 @@ const TaskModal = ({
           </ProjectNameWrapper>
           <AssigneesWrapper>
             <p>Assignees</p>
-            <NameWrapper> {Names}</NameWrapper>
+            <NameWrapper>{Names}</NameWrapper>
           </AssigneesWrapper>
         </DetailsWrapper>
         <Description>Description</Description>
@@ -86,28 +124,25 @@ const TaskModal = ({
         <SubTitle>due dates</SubTitle>
         <p>{moment(dueDate).format("MMM Do YYYY")}</p>
         <SubTitle>checklist</SubTitle>
-        {checklist.map((list, index) => {
+        {checklist.map((list) => {
           const checkmark = list.isChecked;
           const checklistName = list.checklistName;
           return (
             <ChecklistWrapper>
-              {/* {list.isChecked ? (
-                <FilledBox
-                  onClick={() => {
-                    toggleCheck(index);
-                  }}
-                />
-              ) : (
-                <EmptyBox
-                  onClick={() => {
-                    toggleCheck(index);
-                  }}
-                />
-              )} */}
+              <CheckBox
+                type="checkbox"
+                defaultChecked={checkmark}
+                onChange={(e) => handleCheckbox(e)}
+                name={checklistName}
+              />
               <ChecklistName> {checklistName}</ChecklistName>
             </ChecklistWrapper>
           );
         })}
+        <Line>
+          {comments.length ? CommentSection : <div></div>}
+          <Comments fetchTasks={fetchTasks} _id={_id} />
+        </Line>
       </ModalContent>
     </ModalWrapper>
   );
@@ -131,7 +166,7 @@ const ModalContent = styled.div`
   height: 740px;
   background: #f8f7f7;
   border-radius: 40px;
-  padding: 50px 50px 0 50px;
+  padding: 50px 50px 50px 50px;
   overflow-y: auto;
 `;
 const ExitButton = styled.button`
@@ -202,20 +237,9 @@ const Description = styled.p`
 const ChecklistWrapper = styled.div`
   display: flex;
   margin-top: 5px;
+  align-items: center;
 `;
-const EmptyBox = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 8px;
-  border: 1.5px solid #347193;
-`;
-const FilledBox = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 8px;
-  background: #347193;
-  border: 1.5px solid #347193;
-`;
+
 const ChecklistName = styled.p`
   margin-left: 30px;
 `;
@@ -223,5 +247,40 @@ const NameWrapper = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+`;
+const CheckBox = styled.input`
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  border: 1.5px solid #347193;
+`;
+const Line = styled.div`
+  margin-top: 20px;
+  border-top: 1.5px solid #347193;
+`;
+const CommentWrapper = styled.div`
+  margin-top: 20px;
+`;
+const Name = styled.p`
+  font-weight: 500;
+  margin-left: 20px;
+`;
+const CommentHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const AvatarDefault = styled.div`
+  width: 30px;
+  height: 30px;
+  background: #347193;
+  border-radius: 50%;
+`;
+const Comment = styled.p`
+  margin-left: 50px;
+`;
+const Timestamp = styled.p`
+  margin-left: 25px;
+  color: #a6a6a6;
+  font-size: 15px;
 `;
 export default TaskModal;

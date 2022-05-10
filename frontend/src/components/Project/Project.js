@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import Lists from "./Lists";
 import { UserContext } from "../../Context/UserContext";
-import Home from "../Home/Home";
+
 const Project = () => {
   const { isLoggedIn } = useContext(UserContext);
   const { _id } = useParams();
   const [project, setProject] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
-
+  const [myTask, setMyTask] = useState(false);
   // calling project
   useEffect(() => {
     const project = async () => {
@@ -29,17 +29,35 @@ const Project = () => {
             <Title>project</Title>
             <Selection>
               <InputWrapper>
-                <Input type="radio" name="tasks" checked onChange={(e) => {}} />
+                <Input
+                  type="radio"
+                  name="tasks"
+                  checked={!myTask}
+                  onChange={(e) => {
+                    setMyTask(false);
+                  }}
+                />
                  <Label htmlFor="allTasks">all tasks</Label>
               </InputWrapper>
               <InputWrapper>
-                <Input type="radio" name="tasks" onChange={(e) => {}} /> 
-                <Label htmlFor="myTasks">my tasks</Label>
+                <Input
+                  type="radio"
+                  name="tasks"
+                  checked={myTask}
+                  onChange={(e) => {
+                    setMyTask(true);
+                  }}
+                />
+                 <Label htmlFor="myTasks">my tasks</Label>
               </InputWrapper>
             </Selection>
           </HeaderWrapper>
           <SubTitle>{project.projectName}</SubTitle>
-          <Lists projectId={project._id} projectName={project.projectName} />
+          <Lists
+            projectId={project._id}
+            projectName={project.projectName}
+            myTask={myTask}
+          />
         </PageWrapper>
       ) : (
         <div>Loading</div>
