@@ -12,21 +12,22 @@ const ProjectSection = () => {
       <Header>
         <BoxTitle>projects</BoxTitle>
       </Header>
-
-      {projects.map((project) => {
-        const projectName = project.projectName;
-        const _id = project._id;
-        return (
-          <Button
-            onClick={() => {
-              nagivate(`/project/${_id}`);
-            }}
-            key={_id}
-          >
-            {projectName}
-          </Button>
-        );
-      })}
+      <ButtonWrapper>
+        {projects.map((project) => {
+          const projectName = project.projectName;
+          const _id = project._id;
+          return (
+            <Button
+              onClick={() => {
+                nagivate(`/project/${_id}`);
+              }}
+              key={_id}
+            >
+              {projectName}
+            </Button>
+          );
+        })}
+      </ButtonWrapper>
     </Box>
   );
 };
@@ -41,7 +42,7 @@ const Button = styled.button`
   margin-top: 20px;
   border: 1.5px solid #347193;
   background: none;
-  width: 250px;
+  width: 300px;
   height: 50px;
   border-radius: 30px;
   font-family: "antique-olive";
@@ -58,5 +59,12 @@ const Header = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`;
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  overflow-y: auto;
+  flex-wrap: wrap;
+  height: 7vh;
 `;
 export default ProjectSection;

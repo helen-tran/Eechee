@@ -59,22 +59,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const AddButton = styled.button`
-  border: 1.5px solid #347193;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  margin-left: 10px;
-  color: #347193;
-  cursor: pointer;
-  font-weight: 600;
-  background: #f8f7f7;
-  &:hover {
-    background: #347193;
-    color: #f8f7f7;
-    transition: 0.2s;
-  }
-`;
 const Input = styled.input`
   color: #347193;
   text-align: left;

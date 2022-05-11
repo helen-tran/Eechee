@@ -27,10 +27,10 @@ const HomeSignIn = () => {
   );
 };
 const Title = styled.h1`
-  margin: 0;
+  margin-bottom: -10px;
 `;
 const SubTitle = styled.h2`
-  margin: 0;
+  margin-bottom: 15px;
 `;
 const MainWrapper = styled.div`
   display: flex;
@@ -38,11 +38,11 @@ const MainWrapper = styled.div`
   justify-content: space-between;
 `;
 const WrapperLeft = styled.div`
-  width: 45%;
+  width: 48%;
 `;
 
 const WrapperRight = styled.div`
-  width: 45%;
+  width: 48%;
 `;
 
 export default HomeSignIn;

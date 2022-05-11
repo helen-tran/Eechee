@@ -5,6 +5,7 @@ export const ProjectsContext = createContext(null);
 export const ProjectsProvider = ({ children }) => {
   const [projects, setProjects] = useState(null);
   const [projectName, setProjectName] = useState({});
+  const [tasks, setTasks] = useState();
 
   const fetchProjects = () => {
     const projects = async () => {
@@ -15,7 +16,17 @@ export const ProjectsProvider = ({ children }) => {
     projects();
   };
 
+  const fetchAllTasks = () => {
+    const tasks = async () => {
+      const response = await fetch(`/tasks`);
+      const data = await response.json();
+      setTasks(data.data);
+    };
+    tasks();
+  };
+
   useEffect(() => {
+    fetchAllTasks();
     fetchProjects();
   }, []);
 
@@ -27,6 +38,8 @@ export const ProjectsProvider = ({ children }) => {
         projectName,
         setProjectName,
         fetchProjects,
+        fetchAllTasks,
+        tasks,
       }}
     >
       {children}

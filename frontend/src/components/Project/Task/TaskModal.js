@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { ProjectsContext } from "../../../Context/ProjectsContext";
 import ConfirmDelete from "./ConfirmDelete";
 import Comments from "./AddComment";
 import moment from "moment";
@@ -17,10 +18,12 @@ const TaskModal = ({
   fetchTasks,
   comments,
 }) => {
+  const { fetchAllTasks } = useContext(ProjectsContext);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [assigneesInfo, setAssigneesInfo] = useState([]);
   const [checkboxes, setCheckboxes] = useState([]);
-  const [info, setInfo] = useState(null);
+
+  // fetching assignees names
   useEffect(() => {
     const fetchAssignees = async () => {
       const responses = await Promise.all(
@@ -32,6 +35,7 @@ const TaskModal = ({
     fetchAssignees();
   }, []);
 
+  // map out names
   const Names = assigneesInfo.map((assignee) => {
     const firstName = assignee.firstName;
     const lastName = assignee.lastName;
@@ -45,7 +49,6 @@ const TaskModal = ({
   // check and uncheck
   const handleCheckbox = (e) => {
     e.persist();
-    // e.stopPropagation();
     setCheckboxes({
       ...checkboxes,
       checklistName: e.target.name,
@@ -53,6 +56,8 @@ const TaskModal = ({
       taskId: _id,
     });
   };
+
+  // updating checkmarks in the backend after setting the state for checkboxes
   useEffect(() => {
     const checking = async (e) => {
       const requestOptions = {
@@ -62,10 +67,11 @@ const TaskModal = ({
       };
       const response = await fetch(`/task`, requestOptions);
       const data = await response.json();
-      return fetchTasks();
+      return fetchTasks(), fetchAllTasks();
     };
     checking();
   }, [checkboxes]);
+
   const CommentSection = comments.map((comment) => {
     const name = comment.name;
     const mention = comment.comment;
@@ -254,7 +260,7 @@ const NameWrapper = styled.div`
 const CheckBox = styled.input`
   width: 20px;
   height: 20px;
-  border-radius: 8px;
+  border-radius: 20px;
   border: 1.5px solid #347193;
 `;
 const Line = styled.div`
