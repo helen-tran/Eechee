@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Task from "./Task/Task";
 import AddTaskModal from "./Task/AddTaskModal";
+import ProjectContext from "../../Context/ProjectsContext";
 
 const AllTasks = ({ projectName, listId }) => {
   const [tasks, setTasks] = useState(null);
@@ -35,6 +36,7 @@ const AllTasks = ({ projectName, listId }) => {
             const _id = task._id;
             const idList = task.listId;
             const comments = task.comments;
+            const isComplete = task.isComplete;
             return (
               <>
                 <Task
@@ -49,6 +51,7 @@ const AllTasks = ({ projectName, listId }) => {
                   idList={idList}
                   fetchTasks={fetchTasks}
                   comments={comments}
+                  isComplete={isComplete}
                 />
               </>
             );

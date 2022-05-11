@@ -17,11 +17,36 @@ const TaskModal = ({
   projectName,
   fetchTasks,
   comments,
+  isComplete,
 }) => {
   const { fetchAllTasks } = useContext(ProjectsContext);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [assigneesInfo, setAssigneesInfo] = useState([]);
   const [checkboxes, setCheckboxes] = useState([]);
+  const [complete, setComplete] = useState({
+    taskId: _id,
+    isComplete: isComplete,
+  });
+
+  // mark task complete
+  const handleComplete = () => {
+    setComplete({ ...complete, isComplete: !isComplete });
+  };
+
+  useEffect(() => {
+    const markComplete = async () => {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(complete),
+      };
+      const response = await fetch(`/task/complete`, requestOptions);
+      const data = await response.json();
+      return fetchTasks(), fetchAllTasks();
+    };
+    markComplete();
+  }, [complete]);
+  console.log(complete);
 
   // fetching assignees names
   useEffect(() => {
@@ -106,7 +131,16 @@ const TaskModal = ({
         </ExitButton>
         <Header>
           <Title>{taskName}</Title>
-          <Button>Mark as Complete</Button>
+          {isComplete ? (
+            <Button
+              onClick={handleComplete}
+              style={{ background: "#347193", color: "#f8f7f7" }}
+            >
+              Mark as Incomplete
+            </Button>
+          ) : (
+            <Button onClick={handleComplete}>Mark as Complete</Button>
+          )}
         </Header>
         <SettingWrapper>
           <Button
@@ -292,4 +326,5 @@ const Timestamp = styled.p`
   color: #a6a6a6;
   font-size: 15px;
 `;
+
 export default TaskModal;

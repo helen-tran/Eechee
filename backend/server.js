@@ -20,6 +20,7 @@ const {
   addTask,
   updateCheckmark,
   addComment,
+  markComplete,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -69,6 +70,9 @@ express()
 
   // update checkmark
   .post("/task", updateCheckmark)
+
+  // update mark as complete
+  .post("/task/complete", markComplete)
 
   // add comment
   .post("/task/:taskId", addComment)

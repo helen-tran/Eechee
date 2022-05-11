@@ -16,6 +16,7 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
     listId: listId,
     checklist: [],
     comments: [],
+    isComplete: false,
   });
 
   //   adding checklist

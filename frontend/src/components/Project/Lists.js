@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import AllTasks from "./AllTasks";
 import MyTasks from "./MyTasks";
+import { ProjectsContext } from "../../Context/ProjectsContext";
 
 const Lists = ({ projectId, projectName, myTask }) => {
+  const { listHasLoaded, setListHasLoaded } = useContext(ProjectsContext);
   const [lists, setLists] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInput, setIsInput] = useState(false);

@@ -11,6 +11,7 @@ const Task = ({
   checklist,
   fetchTasks,
   comments,
+  isComplete,
 }) => {
   const [openTaskModal, setTaskOpenModal] = useState(false);
   return (
@@ -20,6 +21,7 @@ const Task = ({
         onClick={() => {
           setTaskOpenModal(true);
         }}
+        style={{ opacity: isComplete && "0.3" }}
       >
         {taskName}
       </TaskButton>
@@ -35,6 +37,7 @@ const Task = ({
           checklist={checklist}
           fetchTasks={fetchTasks}
           comments={comments}
+          isComplete={isComplete}
         />
       )}
     </TaskWrapper>

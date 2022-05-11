@@ -398,6 +398,43 @@ const addComment = async (req, res) => {
     client.close();
   }
 };
+// MARK AS COMPLETE
+const markComplete = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const taskId = req.body.taskId;
+    const isComplete = req.body.isComplete;
+
+    const updateComplete = await db
+      .collection("tasks")
+      .updateOne(
+        { _id: ObjectId(taskId) },
+        { $set: { isComplete: isComplete } }
+      );
+
+    if (updateComplete) {
+      return res.status(200).json({
+        status: 200,
+        message: "Mark as complete updated.",
+        data: updateComplete,
+      });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Mark as complete can't be updated.",
+        data: updateComplete,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
 
 // UPDATING CHECKMARKS IN TASK
 const updateCheckmark = async (req, res) => {
@@ -548,4 +585,5 @@ module.exports = {
   addList,
   updateCheckmark,
   addComment,
+  markComplete,
 };

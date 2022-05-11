@@ -6,6 +6,9 @@ export const ProjectsProvider = ({ children }) => {
   const [projects, setProjects] = useState(null);
   const [projectName, setProjectName] = useState({});
   const [tasks, setTasks] = useState();
+  const [projectHasLoaded, setProjectHasLoaded] = useState(false);
+  const [listHasLoaded, setListHasLoaded] = useState(false);
+  const [taskHasLoaded, setTaskHasLoaded] = useState(false);
 
   const fetchProjects = () => {
     const projects = async () => {
@@ -40,6 +43,12 @@ export const ProjectsProvider = ({ children }) => {
         fetchProjects,
         fetchAllTasks,
         tasks,
+        projectHasLoaded,
+        setProjectHasLoaded,
+        listHasLoaded,
+        setListHasLoaded,
+        taskHasLoaded,
+        setTaskHasLoaded,
       }}
     >
       {children}
