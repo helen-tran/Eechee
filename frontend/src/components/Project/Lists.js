@@ -16,6 +16,7 @@ const Lists = ({ projectId, projectName, myTask }) => {
       const response = await fetch(`/lists/${projectId}`);
       const data = await response.json();
       setLists(data.data);
+      setListHasLoaded(true);
       setHasLoaded(true);
     };
     lists();
@@ -51,14 +52,12 @@ const Lists = ({ projectId, projectName, myTask }) => {
                 <ListName key={listId}>{listName}</ListName>
                 {myTask ? (
                   <MyTasks
-                    key={listId}
                     listId={listId}
                     projectName={projectName}
                     myTask={myTask}
                   />
                 ) : (
                   <AllTasks
-                    key={listId}
                     listId={listId}
                     projectName={projectName}
                     myTask={myTask}

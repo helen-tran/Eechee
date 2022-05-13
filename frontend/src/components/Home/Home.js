@@ -1,41 +1,34 @@
 import styled from "styled-components";
 import Modal from "./Modal/Modal";
-import { useContext, useEffect } from "react";
-import { UserContext } from "../../Context/UserContext";
-import HomeSignIn from "./HomeSignIn/HomeSignIn";
+import { useEffect } from "react";
 import eechee from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/assets/eechee-home.svg";
 
 const Home = ({ openModal, setOpenModal }) => {
-  const { isLoggedIn } = useContext(UserContext);
   useEffect(() => {
     setOpenModal(false);
-  }, []);
+  }, [setOpenModal]);
+
   return (
     <>
-      {isLoggedIn ? (
-        <HomeSignIn />
-      ) : (
-        <PageWrapper>
-          <ContentWrapper>
-            <Wrapper1>
-              <Title src={eechee} />
-              <SubText>
-                Eechee is a web work management platform designed to help teams
-                organize, track, and manage their work.
-              </SubText>
-            </Wrapper1>
-            <Wrapper2>
-              <SubText>Helping you work more efficiently</SubText>
-              <Text>
-                From the small stuff to the big picture, Eechee organizes work
-                so teams know what to do, why it matters, and how to get it
-                done.
-              </Text>
-            </Wrapper2>
-          </ContentWrapper>
-          {openModal && <Modal setOpenModal={setOpenModal} />}
-        </PageWrapper>
-      )}
+      <PageWrapper>
+        <ContentWrapper>
+          <Wrapper1>
+            <Title src={eechee} />
+            <SubText>
+              Eechee is a web work management platform designed to help teams
+              organize, track, and manage their work.
+            </SubText>
+          </Wrapper1>
+          <Wrapper2>
+            <SubText>Helping you work more efficiently</SubText>
+            <Text>
+              From the small stuff to the big picture, Eechee organizes work so
+              teams know what to do, why it matters, and how to get it done.
+            </Text>
+          </Wrapper2>
+        </ContentWrapper>
+        {openModal && <Modal setOpenModal={setOpenModal} />}
+      </PageWrapper>
     </>
   );
 };

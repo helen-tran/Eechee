@@ -39,6 +39,7 @@ const SignIn = ({ setOpenModal }) => {
       setSignInError(true);
       setIsFetching(false);
       navigate(`/`);
+      localStorage.setItem("user", JSON.stringify(data.data));
     } else {
       setSignInError(true);
       setIsFetching(false);

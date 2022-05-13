@@ -1,56 +1,35 @@
 import styled from "styled-components";
 import { ProjectsContext } from "../../../Context/ProjectsContext";
-import { useContext, useState, useEffect } from "react";
-import axios from "axios";
+import { useContext } from "react";
 
-const ProjectsDetails = () => {
+const ProjectsDetails = ({ lists }) => {
   const { projects } = useContext(ProjectsContext);
-  const [lists, setLists] = useState(null);
-  const [listLoaded, setListLoaded] = useState(false);
-
-  useEffect(() => {
-    const fetchLists = async () => {
-      const responses = await Promise.all(
-        projects.map((project) => axios.get(`/lists/${project._id}`))
-      );
-      setLists(responses.map((res) => res.data.data));
-      setListLoaded(true);
-    };
-    fetchLists();
-  }, []);
 
   return (
     <Box>
-      {listLoaded ? (
-        <>
-          <BoxTitle>project details</BoxTitle>
-          <Content>
-            <LeftWrapper>
-              <SubTitle>Project Name</SubTitle>
-              {projects.map((project) => {
-                const _id = project._id;
-                return (
-                  <Line>
-                    <Text>{project.projectName}</Text>
-                  </Line>
-                );
-              })}
-            </LeftWrapper>
-            <RightWrapper>
-              <SubTitle>List</SubTitle>
-              {lists.map((list) => {
-                return (
-                  <Line>
-                    <Text>{list.length}</Text>
-                  </Line>
-                );
-              })}
-            </RightWrapper>
-          </Content>
-        </>
-      ) : (
-        <div></div>
-      )}
+      <BoxTitle>project details</BoxTitle>
+      <Content>
+        <LeftWrapper>
+          <SubTitle>Project Name</SubTitle>
+          {projects.map((project) => {
+            return (
+              <Line key={project._id}>
+                <Text key={project._id}>{project.projectName}</Text>
+              </Line>
+            );
+          })}
+        </LeftWrapper>
+        <RightWrapper>
+          <SubTitle>List</SubTitle>
+          {lists.map((list) => {
+            return (
+              <Line key={list._id}>
+                <Text key={list._id}>{list.length}</Text>
+              </Line>
+            );
+          })}
+        </RightWrapper>
+      </Content>
     </Box>
   );
 };

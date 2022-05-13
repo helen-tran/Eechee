@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# Eechee
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Introduction
 
-## Available Scripts
+Eeechee is a MERN website still in development. In mandarin, eechee means together, which is the name of this website. It is a web based, work managing platform that help make the workflow more efficient.
 
-In the project directory, you can run:
+To get started, in the terminal. Enter cd backend, and then hit yarn start. Then cd frontend, and hit yarn start as well.
 
-### `npm start`
+# Project
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Coding Languages
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Eechee web application uses React.js, Node.js as well as Mongo.db.
 
-### `npm test`
+## The Application
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The website is built with design in mind as, helps with managing workflow.
 
-### `npm run build`
+### 1. Homepage
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The start page includes a start button, allowing it to begin.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<!-- ![image](ScreenShots/StartGame.png) -->
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Login or Sign Up
 
-### `npm run eject`
+During the game, you can use your keyboard to move the characters left and right in order to dodge the meteors falling. At the top left corner, there is a point tracker, that tracks every meteors that falls and adds a point to the game.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. Home Page Logged In
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Once the game is over, there is a restart button to enter back into a newly refreshed game.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 4. All Projects
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+This pages shows all the projects of the organization
 
-## Learn More
+### 5. View Tasks for Project
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can view all the tasks for the project or filter to see the task assigned to the user that is logged in.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 6. View Details of Each Tasks
 
-### Code Splitting
+In the detail section, you can view the description of the tasks, the assignees and the due date of the task. There's also a checklist included that shows the break down of the task. Under the checklist, you will find a comment section to communicate with teammates. This modal includes a delete button to delete a task, as well as a "mark as complete" button that will grey it out in the list.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 7. Adding Tasks
 
-### Analyzing the Bundle Size
+In the adding task modal, the project name of the page is already defined. There are inputs to add the name of the tasks, add assignees as well a text box to enter the description for the project. There's a section to input a due date and adding checkboxes to a checklist.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 8. Profile Page

@@ -2,13 +2,10 @@ import styled from "styled-components";
 import { useContext, useState } from "react";
 import { ProjectsContext } from "../Context/ProjectsContext";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../Context/UserContext";
-import Home from "./Home/Home";
 
 const Projects = () => {
   const { projects, projectName, setProjectName, fetchProjects } =
     useContext(ProjectsContext);
-  const { isLoggedIn } = useContext(UserContext);
   let nagivate = useNavigate();
   const [isInput, setIsInput] = useState(false);
 
@@ -21,56 +18,49 @@ const Projects = () => {
     };
 
     const response = await fetch("/project", requestOptions);
-    const data = await response.json();
+    await response.json();
     setIsInput(false);
     return fetchProjects();
   };
-
   return (
-    <>
-      {isLoggedIn ? (
-        <PageWrapper>
-          <Title>projects</Title>
-          <SubTitle>here are all projects</SubTitle>
-          <WrapperButton>
-            {projects.map((project) => {
-              const projectName = project.projectName;
-              const _id = project._id;
-              return (
-                <ProjectName
-                  key={_id}
-                  onClick={() => {
-                    nagivate(`/project/${_id}`);
-                  }}
-                >
-                  {projectName}
-                </ProjectName>
-              );
-            })}
-            {isInput ? (
-              <InputWrapper>
-                <Input
-                  type="text"
-                  placeholder="Project Name"
-                  onChange={(e) => setProjectName(e.target.value)}
-                />
-                <PlusButton onClick={handleAddProject}>+</PlusButton>
-              </InputWrapper>
-            ) : (
-              <AddButton
-                onFocus={() => {
-                  setIsInput(true);
-                }}
-              >
-                +
-              </AddButton>
-            )}
-          </WrapperButton>
-        </PageWrapper>
-      ) : (
-        <Home />
-      )}
-    </>
+    <PageWrapper>
+      <Title>projects</Title>
+      <SubTitle>here are all projects</SubTitle>
+      <WrapperButton>
+        {projects.map((project) => {
+          const projectName = project.projectName;
+          const _id = project._id;
+          return (
+            <ProjectName
+              key={_id}
+              onClick={() => {
+                nagivate(`/project/${_id}`);
+              }}
+            >
+              {projectName}
+            </ProjectName>
+          );
+        })}
+        {isInput ? (
+          <InputWrapper>
+            <Input
+              type="text"
+              placeholder="Project Name"
+              onChange={(e) => setProjectName(e.target.value)}
+            />
+            <PlusButton onClick={handleAddProject}>+</PlusButton>
+          </InputWrapper>
+        ) : (
+          <AddButton
+            onFocus={() => {
+              setIsInput(true);
+            }}
+          >
+            +
+          </AddButton>
+        )}
+      </WrapperButton>
+    </PageWrapper>
   );
 };
 const PageWrapper = styled.div``;

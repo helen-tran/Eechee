@@ -2,10 +2,12 @@ import styled from "styled-components";
 import logo from "../assets/eechee-logo.svg";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "/Users/helen-tran/Documents/Concordia-Bootcamp/Workshops/Eechee/frontend/src/Context/UserContext.js";
 
 const Header = ({ setOpenModal }) => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  const { isLoggedIn, setIsLoggedIn, setCurrentUser } = useContext(UserContext);
+  let nagivate = useNavigate();
   return (
     <Wrapper>
       <LinkWrapper to="/">
@@ -15,10 +17,13 @@ const Header = ({ setOpenModal }) => {
         {isLoggedIn ? (
           <>
             <Link to="/projects">Projects</Link>
-            <Link to="/">Profile</Link>
+            <Link to="/profile">Profile</Link>
             <Button
               onClick={() => {
                 setIsLoggedIn(false);
+                nagivate(`/`);
+                setCurrentUser(null);
+                localStorage.clear();
               }}
             >
               Log Out

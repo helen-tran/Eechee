@@ -1,28 +1,53 @@
 import styled from "styled-components";
-import { useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../../Context/UserContext";
 import ProjectsDetails from "./ProjectsDetails";
 import DueDates from "../DueDates";
 import ProjectSection from "./ProjectSection";
 import moment from "moment";
+import Spinner from "../../Spinner";
+import axios from "axios";
+import { ProjectsContext } from "../../../Context/ProjectsContext";
 
 const HomeSignIn = () => {
   const { currentUser } = useContext(UserContext);
+  const { projects } = useContext(ProjectsContext);
   const today = moment(new Date()).format("dddd MMM Do");
+  const [listNumLoaded, setListNumLoaded] = useState(false);
+  const [lists, setLists] = useState(null);
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      const responses = await Promise.all(
+        projects.map((project) => axios.get(`/lists/${project._id}`))
+      );
+      setLists(responses.map((res) => res.data.data));
+      setListNumLoaded(true);
+    };
+    fetchLists();
+  }, []);
   return (
     <div>
-      <Title>home</Title>
-      <MainWrapper>
-        <WrapperLeft>
-          <SubTitle>welcome {currentUser.firstName}</SubTitle>
-          <ProjectsDetails />
-        </WrapperLeft>
-        <WrapperRight>
-          <SubTitle>{today}</SubTitle>
-          <DueDates />
-        </WrapperRight>
-      </MainWrapper>
-      <ProjectSection />
+      {listNumLoaded ? (
+        <>
+          <Title>home</Title>
+          <MainWrapper>
+            <WrapperLeft>
+              <SubTitle>Welcome {currentUser.firstName}</SubTitle>
+              <ProjectsDetails lists={lists} />
+            </WrapperLeft>
+            <WrapperRight>
+              <SubTitle>{today}</SubTitle>
+              <DueDates />
+            </WrapperRight>
+          </MainWrapper>
+          <ProjectSection />
+        </>
+      ) : (
+        <WrapperSpinner>
+          <Spinner />
+        </WrapperSpinner>
+      )}
     </div>
   );
 };
@@ -44,5 +69,10 @@ const WrapperLeft = styled.div`
 const WrapperRight = styled.div`
   width: 48%;
 `;
-
+const WrapperSpinner = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+`;
 export default HomeSignIn;

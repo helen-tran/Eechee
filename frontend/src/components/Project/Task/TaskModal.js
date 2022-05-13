@@ -46,7 +46,6 @@ const TaskModal = ({
     };
     markComplete();
   }, [complete]);
-  console.log(complete);
 
   // fetching assignees names
   useEffect(() => {

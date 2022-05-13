@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import Lists from "./Lists";
-import { UserContext } from "../../Context/UserContext";
+import Spinner from "../Spinner";
 
 const Project = () => {
-  const { isLoggedIn } = useContext(UserContext);
   const { _id } = useParams();
   const [project, setProject] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [myTask, setMyTask] = useState(false);
+
   // calling project
   useEffect(() => {
     const project = async () => {
@@ -19,8 +19,7 @@ const Project = () => {
       setHasLoaded(true);
     };
     project();
-  }, []);
-
+  }, [_id]);
   return (
     <>
       {hasLoaded ? (
@@ -60,7 +59,9 @@ const Project = () => {
           />
         </PageWrapper>
       ) : (
-        <div>Loading</div>
+        <WrapperSpinner>
+          <Spinner />
+        </WrapperSpinner>
       )}
     </>
   );
@@ -99,5 +100,11 @@ const Input = styled.input`
 const Label = styled.label`
   font-size: 30px;
   margin-left: 10px;
+`;
+const WrapperSpinner = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
 export default Project;

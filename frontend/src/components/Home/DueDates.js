@@ -17,7 +17,7 @@ const DueDates = () => {
           <SubTitle>Date</SubTitle>
           {tasks.map((task) => {
             return (
-              <Line>
+              <Line key={task._id}>
                 <Text>{moment(task.dueDate).format("MMM Do YYYY")}</Text>
               </Line>
             );
@@ -27,7 +27,7 @@ const DueDates = () => {
           <SubTitle>Task</SubTitle>
           {tasks.map((task) => {
             return (
-              <Line>
+              <Line key={task._id}>
                 <Text>{task.taskName}</Text>
               </Line>
             );
@@ -45,7 +45,7 @@ const DueDates = () => {
               }
             });
             return (
-              <Line>
+              <Line key={task._id}>
                 <p>{count}</p>
               </Line>
             );

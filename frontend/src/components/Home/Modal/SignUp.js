@@ -128,7 +128,7 @@ const Button = styled.button`
     opacity: 0.6;
   }
 `;
-const InputWrapper = styled.div`
+const InputWrapper = styled.form`
   display: flex;
   flex-direction: row;
   justify-content: space-between;

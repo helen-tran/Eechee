@@ -3,7 +3,6 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 require("dotenv").config();
 const { MONGO_URI } = process.env;
-const assert = require("assert");
 
 const options = {
   useNewUrlParser: true,
