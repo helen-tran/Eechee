@@ -504,7 +504,45 @@ const deleteTask = async (req, res) => {
     client.close();
   }
 };
+// UPLOADING PROFILE PICTURE
+const uploadProfile = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const profileImg = req.body.profileImg;
+    const userId = req.body.userId;
 
+    const profile = await db.collection("users").updateOne(
+      { _id: ObjectId(userId) },
+      {
+        $set: {
+          avatarImg: profileImg,
+        },
+      }
+    );
+
+    if (profile) {
+      return res.status(200).json({
+        status: 200,
+        message: "Profile picture uploaded.",
+        data: profile,
+      });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Can't upload profile pictures.",
+        data: profile,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
 // Sign In
 const signIn = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
@@ -542,7 +580,8 @@ const addUser = async (req, res) => {
     await client.connect();
     const db = client.db("eechee-data");
     const newUser = req.body;
-    newUser.oraganization = "Eechee";
+    newUser.organization = "Eechee";
+    newUser.avatarImg = "";
 
     const user = await db.collection("users").insertOne(req.body);
     if (user.length === 1) {
@@ -585,4 +624,5 @@ module.exports = {
   updateCheckmark,
   addComment,
   markComplete,
+  uploadProfile,
 };

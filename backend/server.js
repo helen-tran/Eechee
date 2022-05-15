@@ -21,6 +21,7 @@ const {
   updateCheckmark,
   addComment,
   markComplete,
+  uploadProfile,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -70,6 +71,9 @@ express()
 
   // update checkmark
   .post("/task", updateCheckmark)
+
+  // update profile picture
+  .post("/user", uploadProfile)
 
   // update mark as complete
   .post("/task/complete", markComplete)

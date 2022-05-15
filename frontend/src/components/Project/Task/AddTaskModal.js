@@ -76,11 +76,11 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
         <SubTitle>details</SubTitle>
         <DetailsWrapper>
           <ProjectNameWrapper>
-            <p>Project Name</p>
+            <Subject>Project Name</Subject>
             <p>{projectName}</p>
           </ProjectNameWrapper>
           <AssigneesWrapper>
-            <p>Assignees</p>
+            <Subject>Assignees</Subject>
             <AssigneeSearchBar
               task={task}
               setTask={setTask}
@@ -225,6 +225,7 @@ const ProjectNameWrapper = styled.div``;
 
 const Description = styled.p`
   margin-top: 10px;
+  font-weight: 500;
 `;
 const ChecklistWrapper = styled.div``;
 
@@ -331,5 +332,8 @@ const Button = styled.button`
     cursor: not-allowed;
     opacity: 0.6;
   }
+`;
+const Subject = styled.p`
+  font-weight: 500;
 `;
 export default AddTaskModal;
