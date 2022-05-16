@@ -4,6 +4,8 @@
 
 Eeechee is a MERN website still in development. In mandarin, eechee means together, which is the name of this website. It is a web based, work managing platform that help make the workflow more efficient.
 
+The website was designed by me and you can view the figma link [here](https://www.figma.com/file/YwhqtqvFeX9FdeYvBaHaLE/Eechee?node-id=3%3A4)
+
 To get started, in the terminal. Enter cd backend, and then hit yarn start. Then cd frontend, and hit yarn start as well.
 
 # Project
