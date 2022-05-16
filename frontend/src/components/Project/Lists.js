@@ -78,7 +78,7 @@ const Lists = ({ projectId, projectName, myTask }) => {
               </>
             ) : (
               <>
-                <ListName>add another lists</ListName>
+                <ListName>Add Another Lists</ListName>
                 <AddButton
                   onClick={() => {
                     setIsInput(true);
