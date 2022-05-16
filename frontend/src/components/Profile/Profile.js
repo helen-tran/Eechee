@@ -142,7 +142,7 @@ const Profile = () => {
 const Left = styled.div`
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 400px;
 `;
 const Middle = styled.div`
   width: 300px;
