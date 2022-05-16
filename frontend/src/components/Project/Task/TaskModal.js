@@ -5,6 +5,7 @@ import ConfirmDelete from "./ConfirmDelete";
 import Comments from "./AddComment";
 import moment from "moment";
 import axios from "axios";
+import { UserContext } from "../../../Context/UserContext";
 
 const TaskModal = ({
   _id,
@@ -23,6 +24,7 @@ const TaskModal = ({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [assigneesInfo, setAssigneesInfo] = useState([]);
   const [checkboxes, setCheckboxes] = useState([]);
+  const [commentUser, setCommentUser] = useState([]);
   const [complete, setComplete] = useState({
     taskId: _id,
     isComplete: isComplete,
@@ -55,8 +57,15 @@ const TaskModal = ({
       );
       setAssigneesInfo(responses.map((res) => res.data.data));
     };
+    const fetchComments = async () => {
+      const responses = await Promise.all(
+        comments.map((comment) => axios.get(`/user/${comment.userId}`))
+      );
+      setCommentUser(responses.map((res) => res.data.data));
+    };
 
     fetchAssignees();
+    fetchComments();
   }, []);
 
   // map out names
@@ -312,6 +321,12 @@ const CommentHeader = styled.div`
   align-items: center;
 `;
 const AvatarDefault = styled.div`
+  width: 30px;
+  height: 30px;
+  background: #347193;
+  border-radius: 50%;
+`;
+const AvatarImg = styled.img`
   width: 30px;
   height: 30px;
   background: #347193;

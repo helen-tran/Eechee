@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { UserContext } from "../../Context/UserContext";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import moment from "moment";
 import ModalUpload from "../Profile/ModalUpload";
 
@@ -9,6 +9,27 @@ const Profile = () => {
   const fullName = currentUser.firstName + " " + currentUser.lastName;
   const today = moment(new Date()).format("dddd MMM Do");
   const [openModal, setOpenModal] = useState(false);
+  const [myTask, setMyTasks] = useState(null);
+  const [taskHasLoaded, setTaskHasLoaded] = useState(false);
+
+  // getting all tasks for logged in user
+  useEffect(() => {
+    const tasks = async () => {
+      const response = await fetch(`/tasks/${currentUser._id}`);
+      const data = await response.json();
+      setMyTasks(data.data);
+      setTaskHasLoaded(true);
+    };
+    tasks();
+  }, []);
+
+  // sorting by dates
+  myTask.sort((a, b) => b.dueDate - a.dueDate);
+
+  // if my task hasn't loaded
+  if (!taskHasLoaded) {
+    return <div></div>;
+  }
 
   return (
     <Wrapper>
@@ -40,23 +61,96 @@ const Profile = () => {
             ) : (
               <StandardPic />
             )}
-            <InfoWrapper>
-              <Subject>Email</Subject>
-              <p>{currentUser.email}</p>
-              <Subject>Organization</Subject>
-              <p>{currentUser.organization}</p>
-            </InfoWrapper>
-            <InfoWrapper></InfoWrapper>
+            <div>
+              <InfoWrapper>
+                <Subject>Email</Subject>
+                <p>{currentUser.email}</p>
+              </InfoWrapper>
+              <InfoWrapper>
+                <Subject>Organization</Subject>
+                <p>{currentUser.organization}</p>
+              </InfoWrapper>
+            </div>
           </MiddleWrapper>
         </WrapperContent>
         <WrapperContent>
           <SubTitle>{today}</SubTitle>
+          <Content>
+            <Left>
+              <GridTitle>Tasks</GridTitle>
+              {myTask.map((task) => {
+                return (
+                  <Line key={task._id}>
+                    <Text key={task._id}>{task.taskName}</Text>
+                  </Line>
+                );
+              })}
+            </Left>
+            <Middle>
+              <GridTitle>Unchecked Box</GridTitle>
+              {myTask.map((task) => {
+                let count = 0;
+                const checkboxes = task.checklist;
+                checkboxes.map((checkbox) => {
+                  const box = checkbox.isChecked;
+                  if (!box) {
+                    return count++;
+                  }
+                });
+                return (
+                  <Line key={task._id}>
+                    <p>{count}</p>
+                  </Line>
+                );
+              })}
+            </Middle>
+            <Right>
+              <GridTitle>Due Date</GridTitle>
+              {myTask.map((task) => {
+                return (
+                  <Line key={task._id}>
+                    <Text key={task._id}>
+                      {moment(task.dueDate).format("MMM Do YYYY")}
+                    </Text>
+                  </Line>
+                );
+              })}
+            </Right>
+          </Content>
         </WrapperContent>
       </Main>
     </Wrapper>
   );
 };
-const Wrapper = styled.div``;
+const Left = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+`;
+const Middle = styled.div`
+  width: 300px;
+`;
+const Right = styled.div`
+  width: 300px;
+`;
+const Text = styled.p`
+  margin-right: 100px;
+`;
+
+const Line = styled.div`
+  border-top: 1.5px solid #347193;
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+const GridTitle = styled.p`
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-weight: 500;
+  margin-right: 30%;
+`;
+const Wrapper = styled.div`
+  overflow-y: auto;
+`;
 const Title = styled.h1`
   margin-bottom: -10px;
 `;
@@ -64,6 +158,11 @@ const Main = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
+`;
+const Content = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 `;
 const WrapperContent = styled.div`
   border: 1.5px solid #347193;
@@ -80,10 +179,12 @@ const HeaderWrapper = styled.div`
 const MiddleWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   margin-top: 30px;
 `;
-const InfoWrapper = styled.div``;
+const InfoWrapper = styled.div`
+  margin-bottom: 30px;
+  margin-left: 200px;
+`;
 const ButtonWrapper = styled.div``;
 const Button = styled.button`
   border: 1.5px solid #347193;

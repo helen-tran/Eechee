@@ -283,6 +283,41 @@ const getTasksProject = async (req, res) => {
   }
 };
 
+// ALL TASKS FOR USER
+const getAllTasksUser = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const userId = req.params.userId;
+
+    const tasks = await db
+      .collection("tasks")
+      .aggregate([{ $match: { assignees: userId } }])
+      .toArray();
+
+    if (tasks) {
+      return res.status(200).json({
+        status: 200,
+        message: "Tasks for the user found!",
+        data: tasks,
+      });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "Tasks for the user not found",
+        data: tasks,
+      });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: 500, data: req.body, message: err.message });
+  } finally {
+    client.close();
+  }
+};
+
 // GET TASKS/LIST ACCORDING ASSIGNEE AND PROJECT
 const getTasksUser = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
@@ -625,4 +660,5 @@ module.exports = {
   addComment,
   markComplete,
   uploadProfile,
+  getAllTasksUser,
 };

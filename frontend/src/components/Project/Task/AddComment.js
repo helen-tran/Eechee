@@ -30,7 +30,11 @@ const AddComment = ({ fetchTasks, _id }) => {
   };
   return (
     <CommentWrapper>
-      <AvatarDefault />
+      {currentUser.avatarImg === "" ? (
+        <AvatarDefault />
+      ) : (
+        <AvatarImg src={currentUser.avatarImg} />
+      )}
       <Input
         onChange={(e) => setComment({ ...comment, comment: e.target.value })}
       />
@@ -80,5 +84,11 @@ const Button = styled.button`
   border-radius: 30px;
   width: 100px;
   height: 35px;
+`;
+const AvatarImg = styled.img`
+  width: 30px;
+  height: 30px;
+  background: #347193;
+  border-radius: 50%;
 `;
 export default AddComment;

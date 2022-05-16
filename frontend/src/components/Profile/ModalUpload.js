@@ -73,7 +73,9 @@ const ModalUpload = ({ _id, setOpenModal }) => {
             <UploadInput type="file" name="file" onChange={handleUpload} />
             <Button onClick={handleUploadMongo}>Upload</Button>
           </WrapperUpload>
-          {uploadMsg && <Text>Profile picture has been uploaded!</Text>}
+          {uploadMsg && (
+            <TextUploaded>Profile picture has been uploaded!</TextUploaded>
+          )}
         </Wrapper>
       </PopUpContent>
     </ModalWrapper>
@@ -105,6 +107,10 @@ const Text = styled.p`
   font-size: 20px;
   text-align: center;
 `;
+const TextUploaded = styled.p`
+  font-size: 16px;
+  text-align: center;
+`;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -113,15 +119,24 @@ const Wrapper = styled.div`
 `;
 const WrapperUpload = styled.div`
   display: flex;
-  margin-top: 20px;
+  margin-top: 40px;
 `;
 const UploadInput = styled.input`
-  margin-top: 20px;
+  padding-left: 80px;
+  padding-top: 3px;
+  font-size: 18px;
+  font-weight: 400;
   color: #347193;
   cursor: pointer;
-  font-weight: 400;
+  font-family: "roc-grotesk";
   background: #f8f7f7;
-  margin-left: 20px;
+  border: 1.5px solid #347193;
+  border-radius: 30px;
+  height: 28px;
+  width: 200px;
+  ::-webkit-file-upload-button {
+    display: none;
+  }
   &:hover {
     background: #347193;
     color: #f8f7f7;
@@ -145,7 +160,6 @@ const ExitButton = styled.button`
   }
 `;
 const Button = styled.button`
-  margin-top: 10px;
   border: 1.5px solid #347193;
   color: #347193;
   cursor: pointer;
@@ -154,7 +168,7 @@ const Button = styled.button`
   border-radius: 30px;
   width: 100px;
   height: 35px;
-  margin-right: 30px;
+  margin-left: 30px;
   &:hover {
     background: #347193;
     color: #f8f7f7;

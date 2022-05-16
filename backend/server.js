@@ -22,6 +22,7 @@ const {
   addComment,
   markComplete,
   uploadProfile,
+  getAllTasksUser,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -65,6 +66,9 @@ express()
 
   // get tasks for user with id
   .get("/tasks/:userId/:listId", getTasksUser)
+
+  // get all tasks for user
+  .get("/tasks/:userId/", getAllTasksUser)
 
   // add task
   .post("/tasks", addTask)
