@@ -23,6 +23,7 @@ const {
   markComplete,
   uploadProfile,
   getAllTasksUser,
+  deleteUser,
 } = require("./handlers");
 const PORT = process.env.PORT || 7500;
 express()
@@ -87,6 +88,9 @@ express()
 
   // delete tasks
   .delete("/task/:taskId", deleteTask)
+
+  // delete user
+  .delete("/user/:userId", deleteUser)
 
   // login
   .post("/login", signIn)

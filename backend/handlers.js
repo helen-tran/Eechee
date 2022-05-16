@@ -578,6 +578,38 @@ const uploadProfile = async (req, res) => {
     client.close();
   }
 };
+
+// DELETE USER
+const deleteUser = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  try {
+    await client.connect();
+    const db = client.db("eechee-data");
+    const userId = req.params.userId;
+
+    const user = await db
+      .collection("users")
+      .deleteOne({ _id: ObjectId(userId) });
+
+    if (user.deletedCount === 1) {
+      return res.status(200).json({
+        status: 200,
+        message: "The task has been deleted.",
+        data: user,
+      });
+    } else {
+      return res.status(404).json({
+        status: 404,
+        message: "The task hasn't been deleted.",
+        data: user,
+      });
+    }
+  } finally {
+    client.close();
+  }
+};
+
 // Sign In
 const signIn = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
@@ -661,4 +693,5 @@ module.exports = {
   markComplete,
   uploadProfile,
   getAllTasksUser,
+  deleteUser,
 };

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import { UserContext } from "../../Context/UserContext";
 
-const ModalUpload = ({ _id, setOpenModal }) => {
+const ModalUpload = ({ _id, setOpenUploadModal }) => {
   const { setCurrentUser } = useContext(UserContext);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [uploadMsg, setUploadMsg] = useState(false);
@@ -62,7 +62,7 @@ const ModalUpload = ({ _id, setOpenModal }) => {
       <PopUpContent>
         <ExitButton
           onClick={() => {
-            setOpenModal(false);
+            setOpenUploadModal(false);
           }}
         >
           x
@@ -109,6 +109,7 @@ const Text = styled.p`
 `;
 const TextUploaded = styled.p`
   font-size: 16px;
+  margin-top: 15px;
   text-align: center;
 `;
 const Wrapper = styled.div`

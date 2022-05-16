@@ -3,14 +3,16 @@ import { UserContext } from "../../Context/UserContext";
 import { useContext, useState, useEffect } from "react";
 import moment from "moment";
 import ModalUpload from "../Profile/ModalUpload";
+import Spinner from "../Spinner";
+import DeleteUserModal from "./DeleteUserModal";
 
 const Profile = () => {
   const { currentUser } = useContext(UserContext);
   const fullName = currentUser.firstName + " " + currentUser.lastName;
   const today = moment(new Date()).format("dddd MMM Do");
-  const [openModal, setOpenModal] = useState(false);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [myTask, setMyTasks] = useState(null);
-  const [taskHasLoaded, setTaskHasLoaded] = useState(false);
 
   // getting all tasks for logged in user
   useEffect(() => {
@@ -18,18 +20,21 @@ const Profile = () => {
       const response = await fetch(`/tasks/${currentUser._id}`);
       const data = await response.json();
       setMyTasks(data.data);
-      setTaskHasLoaded(true);
     };
     tasks();
   }, []);
 
+  // if my task hasn't loaded
+  if (!myTask) {
+    return (
+      <WrapperSpinner>
+        <Spinner />
+      </WrapperSpinner>
+    );
+  }
+
   // sorting by dates
   myTask.sort((a, b) => b.dueDate - a.dueDate);
-
-  // if my task hasn't loaded
-  if (!taskHasLoaded) {
-    return <div></div>;
-  }
 
   return (
     <Wrapper>
@@ -41,18 +46,30 @@ const Profile = () => {
             <ButtonWrapper>
               <Button
                 onClick={() => {
-                  setOpenModal(true);
+                  setOpenUploadModal(true);
                 }}
               >
                 Upload Picture
               </Button>
-              {openModal && (
+              {openUploadModal && (
                 <ModalUpload
                   _id={currentUser._id}
-                  setOpenModal={setOpenModal}
+                  setOpenUploadModal={setOpenUploadModal}
                 />
               )}
-              <Button>Delete User</Button>
+              <Button
+                onClick={() => {
+                  setOpenDeleteModal(true);
+                }}
+              >
+                Delete User
+              </Button>
+              {openDeleteModal && (
+                <DeleteUserModal
+                  _id={currentUser._id}
+                  setOpenDeleteModal={setOpenDeleteModal}
+                />
+              )}
             </ButtonWrapper>
           </HeaderWrapper>
           <MiddleWrapper>
@@ -215,5 +232,11 @@ const StandardPic = styled.div`
 `;
 const Subject = styled.p`
   font-weight: 500;
+`;
+const WrapperSpinner = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
 export default Profile;
