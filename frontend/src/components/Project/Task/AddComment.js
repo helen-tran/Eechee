@@ -4,7 +4,6 @@ import { UserContext } from "../../../Context/UserContext";
 
 const AddComment = ({ fetchTasks, _id }) => {
   const { currentUser } = useContext(UserContext);
-  const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState({
     userId: currentUser._id,
@@ -24,10 +23,11 @@ const AddComment = ({ fetchTasks, _id }) => {
     setLoading(true);
     const response = await fetch(`/task/${_id}`, requestOptions);
     const data = await response.json();
-    setText("");
+    setComment({ ...comment, comment: "" });
     setLoading(false);
     return fetchTasks();
   };
+
   return (
     <CommentWrapper>
       {currentUser.avatarImg === "" ? (
@@ -36,13 +36,10 @@ const AddComment = ({ fetchTasks, _id }) => {
         <AvatarImg src={currentUser.avatarImg} />
       )}
       <Input
+        value={comment.comment}
         onChange={(e) => setComment({ ...comment, comment: e.target.value })}
       />
-      <Button
-        onClick={handleAddComment}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      >
+      <Button onClick={handleAddComment}>
         {loading ? <>Loading</> : <>Post</>}
       </Button>
     </CommentWrapper>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import AssigneeSearchBar from "./AssigneeSearchBar";
@@ -28,8 +28,12 @@ const AddTaskModal = ({ setOpenModal, projectName, listId, fetchTasks }) => {
     const newChecklists = [...checklist, newChecklist];
     setChecklist(newChecklists);
     setInputCheckName("");
-    setTask({ ...task, checklist });
   };
+
+  // every time checkist renders, add it to tasks
+  useEffect(() => {
+    setTask({ ...task, checklist: checklist });
+  }, [checklist]);
 
   //   check and uncheck
   const toggleCheck = (index) => {

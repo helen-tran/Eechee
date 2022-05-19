@@ -5,7 +5,7 @@ import ConfirmDelete from "./ConfirmDelete";
 import Comments from "./AddComment";
 import moment from "moment";
 import axios from "axios";
-import { UserContext } from "../../../Context/UserContext";
+import Spinner from "../../Spinner";
 
 const TaskModal = ({
   _id,
@@ -23,8 +23,9 @@ const TaskModal = ({
   const { fetchAllTasks } = useContext(ProjectsContext);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [assigneesInfo, setAssigneesInfo] = useState([]);
+  const [assigneesHasLoaded, setAssigneesHasLoaded] = useState(false);
   const [checkboxes, setCheckboxes] = useState([]);
-  const [commentUser, setCommentUser] = useState([]);
+  const [commentUsers, setCommentUsers] = useState([]);
   const [complete, setComplete] = useState({
     taskId: _id,
     isComplete: isComplete,
@@ -56,18 +57,18 @@ const TaskModal = ({
         assignees.map((assignee) => axios.get(`/user/${assignee}`))
       );
       setAssigneesInfo(responses.map((res) => res.data.data));
+      setAssigneesHasLoaded(true);
     };
     const fetchComments = async () => {
       const responses = await Promise.all(
         comments.map((comment) => axios.get(`/user/${comment.userId}`))
       );
-      setCommentUser(responses.map((res) => res.data.data));
+      setCommentUsers(responses.map((res) => res.data.data));
     };
 
     fetchAssignees();
     fetchComments();
   }, []);
-
   // map out names
   const Names = assigneesInfo.map((assignee) => {
     const firstName = assignee.firstName;
@@ -105,6 +106,15 @@ const TaskModal = ({
     checking();
   }, [checkboxes]);
 
+  const AvatarPicture = commentUsers.map((commentUser) => {
+    const avatarImg = commentUser.avatarImg;
+    return (
+      <>
+        {avatarImg === "" ? <AvatarDefault /> : <AvatarImg src={avatarImg} />}
+      </>
+    );
+  });
+
   const CommentSection = comments.map((comment) => {
     const name = comment.name;
     const mention = comment.comment;
@@ -112,7 +122,7 @@ const TaskModal = ({
     return (
       <CommentWrapper>
         <CommentHeader>
-          <AvatarDefault />
+          <>{AvatarPicture}</>
           <Name>{name}</Name>
           <Timestamp>{moment(time).format("MMM Do YYYY, h:mm a")}</Timestamp>
         </CommentHeader>
@@ -123,77 +133,94 @@ const TaskModal = ({
   return (
     <ModalWrapper>
       <ModalContent>
-        {confirmDelete && (
-          <ConfirmDelete
-            _id={_id}
-            setConfirmDelete={setConfirmDelete}
-            fetchTasks={fetchTasks}
-          />
-        )}
-        <ExitButton
-          onClick={() => {
-            setTaskOpenModal(false);
-          }}
-        >
-          x
-        </ExitButton>
-        <Header>
-          <Title>{taskName}</Title>
-          {isComplete ? (
-            <Button
-              onClick={handleComplete}
-              style={{ background: "#347193", color: "#f8f7f7" }}
-            >
-              Mark as Incomplete
-            </Button>
-          ) : (
-            <Button onClick={handleComplete}>Mark as Complete</Button>
-          )}
-        </Header>
-        <SettingWrapper>
-          <Button
-            onClick={() => {
-              setConfirmDelete(true);
-            }}
-          >
-            Delete
-          </Button>
-        </SettingWrapper>
-        <SubTitle>details</SubTitle>
-        <DetailsWrapper>
-          <ProjectNameWrapper>
-            <p>Project Name</p>
-            <p>{projectName}</p>
-          </ProjectNameWrapper>
-          <AssigneesWrapper>
-            <p>Assignees</p>
-            <NameWrapper>{Names}</NameWrapper>
-          </AssigneesWrapper>
-        </DetailsWrapper>
-        <Description>Description</Description>
-        <p>{description}</p>
-        <SubTitle>due dates</SubTitle>
-        <p>{moment(dueDate).format("MMM Do YYYY")}</p>
-        <SubTitle>checklist</SubTitle>
-        {checklist.map((list) => {
-          const checkmark = list.isChecked;
-          const checklistName = list.checklistName;
-          return (
-            <ChecklistWrapper>
-              <CheckBox
-                type="checkbox"
-                defaultChecked={checkmark}
-                onChange={(e) => handleCheckbox(e)}
-                name={checklistName}
+        {assigneesHasLoaded ? (
+          <>
+            {confirmDelete && (
+              <ConfirmDelete
+                _id={_id}
+                setConfirmDelete={setConfirmDelete}
+                fetchTasks={fetchTasks}
               />
-              <ChecklistName> {checklistName}</ChecklistName>
-            </ChecklistWrapper>
-          );
-        })}
-        <Line>
-          {comments.length ? CommentSection : <div></div>}
-          <Comments fetchTasks={fetchTasks} _id={_id} />
-        </Line>
+            )}
+            <ExitButton
+              onClick={() => {
+                setTaskOpenModal(false);
+              }}
+            >
+              x
+            </ExitButton>
+            <Header>
+              <Title>{taskName}</Title>
+              {isComplete ? (
+                <Button
+                  onClick={handleComplete}
+                  style={{ background: "#347193", color: "#f8f7f7" }}
+                >
+                  Mark as Incomplete
+                </Button>
+              ) : (
+                <Button onClick={handleComplete}>Mark as Complete</Button>
+              )}
+            </Header>
+            <SettingWrapper>
+              <Button
+                onClick={() => {
+                  setConfirmDelete(true);
+                }}
+              >
+                Delete
+              </Button>
+            </SettingWrapper>
+            <SubTitle>details</SubTitle>
+            <DetailsWrapper>
+              <ProjectNameWrapper>
+                <p>Project Name</p>
+                <p>{projectName}</p>
+              </ProjectNameWrapper>
+              <AssigneesWrapper>
+                <p>Assignees</p>
+                <NameWrapper>{Names}</NameWrapper>
+              </AssigneesWrapper>
+            </DetailsWrapper>
+            <Description>Description</Description>
+            <p>{description}</p>
+            <SubTitle>due dates</SubTitle>
+            <p>{moment(dueDate).format("MMM Do YYYY")}</p>
+            <SubTitle>checklist</SubTitle>
+            {checklist.map((list) => {
+              const checkmark = list.isChecked;
+              const checklistName = list.checklistName;
+              return (
+                <ChecklistWrapper>
+                  <CheckBox
+                    type="checkbox"
+                    defaultChecked={checkmark}
+                    onChange={(e) => handleCheckbox(e)}
+                    name={checklistName}
+                  />
+                  <ChecklistName> {checklistName}</ChecklistName>
+                </ChecklistWrapper>
+              );
+            })}
+            <Line>
+              {comments.length ? CommentSection : <div></div>}
+              <Comments fetchTasks={fetchTasks} _id={_id} />
+            </Line>
+          </>
+        ) : (
+          <>
+            <ExitButton
+              onClick={() => {
+                setTaskOpenModal(false);
+              }}
+            >
+              x
+            </ExitButton>
+            <WrapperSpinner>
+              <Spinner />
+            </WrapperSpinner>
+          </>
+        )}
       </ModalContent>
     </ModalWrapper>
   );
@@ -340,5 +367,10 @@ const Timestamp = styled.p`
   color: #a6a6a6;
   font-size: 15px;
 `;
-
+const WrapperSpinner = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+`;
 export default TaskModal;

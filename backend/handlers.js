@@ -299,13 +299,13 @@ const getAllTasksUser = async (req, res) => {
     if (tasks) {
       return res.status(200).json({
         status: 200,
-        message: "Tasks for the user found!",
+        message: "All Tasks for the user found!",
         data: tasks,
       });
     } else {
       return res.status(404).json({
         status: 404,
-        message: "Tasks for the user not found",
+        message: "All Tasks for the user not found",
         data: tasks,
       });
     }
@@ -325,11 +325,11 @@ const getTasksUser = async (req, res) => {
     await client.connect();
     const db = client.db("eechee-data");
     const userId = req.params.userId;
-    const listId = req.params.listId;
+    const list_Id = req.params.listId;
 
     const assigneeTasks = await db
       .collection("tasks")
-      .find({ assignees: { $in: [userId] }, listId: listId })
+      .aggregate([{ $match: { assignees: userId, listId: list_Id } }])
       .toArray();
 
     if (assigneeTasks) {

@@ -12,14 +12,13 @@ const MyTasks = ({ projectName, listId }) => {
 
   const fetchTasks = () => {
     const tasks = async () => {
-      const response = await fetch(`/tasks/${currentUser._id}/${listId}`);
+      const response = await fetch(`/tasksUser/${currentUser._id}/${listId}`);
       const data = await response.json();
       setTasks(data.data);
       setHasLoaded(true);
     };
     tasks();
   };
-
   useEffect(() => {
     fetchTasks();
   }, []);

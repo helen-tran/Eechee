@@ -66,7 +66,7 @@ express()
   .get("/tasksList/:listId", getTasksProject)
 
   // get tasks for user with id
-  .get("/tasks/:userId/:listId", getTasksUser)
+  .get("/tasksUser/:userId/:listId", getTasksUser)
 
   // get all tasks for user
   .get("/tasks/:userId/", getAllTasksUser)

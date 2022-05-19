@@ -14,17 +14,17 @@ const ProjectsDetails = ({ lists }) => {
           {projects.map((project) => {
             return (
               <Line key={project._id}>
-                <Text key={project._id}>{project.projectName}</Text>
+                <Text>{project.projectName}</Text>
               </Line>
             );
           })}
         </LeftWrapper>
         <RightWrapper>
           <SubTitle>List</SubTitle>
-          {lists.map((list) => {
+          {lists.map((list, index) => {
             return (
-              <Line key={list._id}>
-                <Text key={list._id}>{list.length}</Text>
+              <Line key={index}>
+                <Text>{list.length}</Text>
               </Line>
             );
           })}

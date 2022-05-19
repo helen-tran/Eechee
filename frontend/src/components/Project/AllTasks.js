@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useEffect, useState, useContext } from "react";
 import Task from "./Task/Task";
 import AddTaskModal from "./Task/AddTaskModal";
-import ProjectContext from "../../Context/ProjectsContext";
 
 const AllTasks = ({ projectName, listId }) => {
   const [tasks, setTasks] = useState(null);
@@ -27,7 +26,7 @@ const AllTasks = ({ projectName, listId }) => {
     <Wrapper>
       {hasLoaded ? (
         <>
-          {tasks.map((task) => {
+          {tasks.map((task, index) => {
             const taskName = task.taskName;
             const assignees = task.assignees;
             const description = task.description;
@@ -40,7 +39,7 @@ const AllTasks = ({ projectName, listId }) => {
             return (
               <>
                 <Task
-                  key={_id}
+                  key={_id.toString()}
                   taskName={taskName}
                   assignees={assignees}
                   description={description}
