@@ -1,10 +1,9 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import { UserContext } from "../../Context/UserContext";
 
 const ModalUpload = ({ _id, setOpenUploadModal }) => {
   const { setCurrentUser } = useContext(UserContext);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [uploadMsg, setUploadMsg] = useState(false);
   const [profile, setProfile] = useState({
     userId: _id,
@@ -27,7 +26,6 @@ const ModalUpload = ({ _id, setOpenUploadModal }) => {
     const file = new FormData();
     file.append("file", picture[0]);
     file.append("upload_preset", "Eechee");
-    setImageLoaded(true);
     const response = await fetch(
       "https://api.cloudinary.com/v1_1/dohydf1mu/image/upload",
       {
@@ -50,7 +48,6 @@ const ModalUpload = ({ _id, setOpenUploadModal }) => {
 
     const response = await fetch("/user", requestOptions);
     const data = await response.json();
-    console.log("return data", data);
     if (data.status === 200) {
       setUploadMsg(true);
     }

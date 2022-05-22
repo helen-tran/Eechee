@@ -27,6 +27,7 @@ const Task = ({
       </TaskButton>
       {openTaskModal && (
         <TaskModal
+          key={_id}
           taskName={taskName}
           assignees={assignees}
           description={description}

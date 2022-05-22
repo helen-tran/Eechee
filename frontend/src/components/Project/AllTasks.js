@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import Task from "./Task/Task";
 import AddTaskModal from "./Task/AddTaskModal";
 
@@ -39,7 +39,7 @@ const AllTasks = ({ projectName, listId }) => {
             return (
               <>
                 <Task
-                  key={_id.toString()}
+                  key={index}
                   taskName={taskName}
                   assignees={assignees}
                   description={description}

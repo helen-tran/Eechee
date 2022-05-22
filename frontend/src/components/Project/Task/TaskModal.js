@@ -74,7 +74,7 @@ const TaskModal = ({
     const firstName = assignee.firstName;
     const lastName = assignee.lastName;
     return (
-      <Assignee>
+      <Assignee key={assignee._id}>
         {firstName} {lastName}
       </Assignee>
     );
@@ -106,23 +106,24 @@ const TaskModal = ({
     checking();
   }, [checkboxes]);
 
-  const AvatarPicture = commentUsers.map((commentUser) => {
-    const avatarImg = commentUser.avatarImg;
-    return (
-      <>
-        {avatarImg === "" ? <AvatarDefault /> : <AvatarImg src={avatarImg} />}
-      </>
-    );
-  });
+  // const AvatarPicture = commentUsers.map((commentUser) => {
+  //   const avatarImg = commentUser.avatarImg;
+  //   return (
+  //     <>
+  //       {avatarImg === "" ? <AvatarDefault /> : <AvatarImg src={avatarImg} />}
+  //     </>
+  //   );
+  // });
 
-  const CommentSection = comments.map((comment) => {
+  const CommentSection = comments.map((comment, index) => {
     const name = comment.name;
     const mention = comment.comment;
     const time = comment.time;
     return (
-      <CommentWrapper>
+      <CommentWrapper key={index}>
         <CommentHeader>
-          <>{AvatarPicture}</>
+          {/* <>{AvatarPicture}</> */}
+          <AvatarDefault />
           <Name>{name}</Name>
           <Timestamp>{moment(time).format("MMM Do YYYY, h:mm a")}</Timestamp>
         </CommentHeader>
@@ -187,11 +188,11 @@ const TaskModal = ({
             <SubTitle>due dates</SubTitle>
             <p>{moment(dueDate).format("MMM Do YYYY")}</p>
             <SubTitle>checklist</SubTitle>
-            {checklist.map((list) => {
+            {checklist.map((list, index) => {
               const checkmark = list.isChecked;
               const checklistName = list.checklistName;
               return (
-                <ChecklistWrapper>
+                <ChecklistWrapper key={index}>
                   <CheckBox
                     type="checkbox"
                     defaultChecked={checkmark}

@@ -27,7 +27,7 @@ const MyTasks = ({ projectName, listId }) => {
     <Wrapper>
       {hasLoaded ? (
         <>
-          {tasks.map((task) => {
+          {tasks.map((task, index) => {
             const taskName = task.taskName;
             const assignees = task.assignees;
             const description = task.description;
